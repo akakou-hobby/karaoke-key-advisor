@@ -4,7 +4,6 @@ let mic
 let pitch
 let recorder
 
-
 function setup() {
   noCanvas()
   audioContext = getAudioContext()
@@ -17,11 +16,9 @@ const loadModel = () =>
   pitch = ml5.pitchDetection('./model/', audioContext, mic.stream, modelLoaded)
 
 
-const modelLoaded = () => {
+const modelLoaded = () =>
   select('#status').html('Model Loaded')
-  recorder = new Recorder()
-  recorder.start()
-}
+
 
 
 class PitchNote {

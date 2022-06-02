@@ -2552,6 +2552,13 @@ slash@^3.0.0:
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
+songle-api@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/songle-api/-/songle-api-1.2.2.tgz#2f8d69d31bc23c85e497402fb4beb65ffe5da941"
+  integrity sha512-7ksQ/+XLGyhE0XsIahQzBjdi11x11sCx4PjZgwKF+So/3ISWWJJYXHNLt5QngghwDUDD11l9Vr5wazP7p0oPEQ==
+  dependencies:
+    w3c-xmlhttprequest "^2.1.2"
+
 source-map-js@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
@@ -2755,6 +2762,11 @@ v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
+
+w3c-xmlhttprequest@^2.1.2:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/w3c-xmlhttprequest/-/w3c-xmlhttprequest-2.2.0.tgz#65a2d219de8aca8f59e591d6f2458a4a7f0eddfe"
+  integrity sha512-qvy1XB53jM13+dRZrr277u4BgW7j5k87L7E98hbSXOG8eolXgqMT2glZ91NHLVmqO6Hb8gw4z28LahHVbhsr2Q==
 
 which-boxed-primitive@^1.0.2:
   version "1.0.2"

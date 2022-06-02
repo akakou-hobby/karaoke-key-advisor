@@ -11,7 +11,6 @@ function setup() {
   mic.start(loadModel)
 }
 
-
 const loadModel = () =>
   pitch = ml5.pitchDetection('/model/', audioContext, mic.stream, modelLoaded)
 

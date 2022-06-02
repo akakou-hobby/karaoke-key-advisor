@@ -4,8 +4,17 @@ let mic
 let pitch
 let recorder
 
+
+// import "p5"
+import * as P5Class from "p5"
+window.p5 = P5Class
+
+import * as sound from "p5/lib/addons/p5.sound";
+
+// import 'p5/lib/addons/p5.dom';
+
 function setup() {
-  noCanvas()
+  // noCanvas()
   audioContext = getAudioContext()
   mic = new p5.AudioIn()
   mic.start(loadModel)
@@ -13,7 +22,7 @@ function setup() {
 
 
 const loadModel = () =>
-  pitch = ml5.pitchDetection('./model/', audioContext, mic.stream, modelLoaded)
+  pitch = ml5.pitchDetection('/public/model/', audioContext, mic.stream, modelLoaded)
 
 
 const modelLoaded = () =>
@@ -104,4 +113,11 @@ const calcAvarageDiff = () => {
   const avg2 = sum2 / recorder2.voice.length
 
   return avg1 - avg2
+}
+
+export {
+  setup,
+  Recorder,
+  calcAvarageDiff,
+  run
 }

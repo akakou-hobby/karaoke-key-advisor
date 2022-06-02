@@ -2,6 +2,27 @@
 let audioContext
 let mic
 let pitch
+let recorder
+
+
+function setup() {
+  noCanvas()
+  audioContext = getAudioContext()
+  mic = new p5.AudioIn()
+  mic.start(loadModel)
+}
+
+
+const loadModel = () =>
+  pitch = ml5.pitchDetection('./model/', audioContext, mic.stream, modelLoaded)
+
+
+const modelLoaded = () => {
+  select('#status').html('Model Loaded')
+  recorder = new Recorder()
+  recorder.start()
+}
+
 
 class PitchNote {
   static scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
@@ -22,33 +43,41 @@ class PitchNote {
 
     return new PitchNote(scale, high)
   }
+
+  static no_sound() {
+    return new PitchNote('', 0)
+  }
 }
 
-function setup() {
-  noCanvas()
-  audioContext = getAudioContext()
-  mic = new p5.AudioIn()
-  mic.start(startPitch)
-}
 
-const startPitch = () => {
-  pitch = ml5.pitchDetection('./model/', audioContext, mic.stream, modelLoaded)
-}
+class Recorder {
+  constructor() {
+    this.voice = []
+    this.timerId = 0
+  }
 
-const modelLoaded = () => {
-  select('#status').html('Model Loaded')
-  getPitch()
-}
+  start() {
+    this.getPitch()
+    this.timerId = setInterval(this.getPitch.bind(this), 10);
 
-const getPitch = () => {
-  pitch.getPitch((err, frequency) => {
-    if (frequency) {
-      const note = PitchNote.from_frequency(frequency)
+  }
 
-      select('#result').html(note.to_string())
-    } else {
-      select('#result').html('No pitch detected')
-    }
-    getPitch()
-  })
+  stop() {
+    this.shouldContinue = false
+    clearInterval(this.timerId)
+  }
+
+  getPitch() {
+    pitch.getPitch((err, frequency) => {
+      if (frequency) {
+        const note = PitchNote.from_frequency(frequency)
+        this.voice.push(note)
+
+        select('#result').html(note.to_string())
+      } else {
+        this.voice.push(PitchNote.no_sound())
+        select('#result').html('No pitch detected')
+      }
+    })
+  }
 }

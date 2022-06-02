@@ -105,24 +105,3 @@ const calcAvarageDiff = () => {
 
   return avg1 - avg2
 }
-
-const calcScore = () => {
-  let result = 0
-
-  const longer = recorder1.voice.length > recorder2.voice.length ? recorder1.voice : recorder2.voice
-  const shorter = recorder1.voice.length < recorder2.voice.length ? recorder1.voice : recorder2.voice
-
-  const unit = longer.length / shorter.length
-
-  for (let i = 0; i < shorter.length && i * unit < longer.length; i++) {
-    const longerIndex = Math.floor(i * unit)
-    result += (longer[longerIndex] - shorter[i]) ** 2.0
-  }
-
-  result /= shorter.length
-  result **= 0.5
-
-  const sign = calcAvarageDiff() >= 0 ? 1 : -1
-
-  return sign * result
-}

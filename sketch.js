@@ -96,7 +96,7 @@ const run = (recorder) => {
     recorder.start()
 }
 
-const calc = () => {
+const calcAvarageDiff = () => {
   const sum1 = recorder1.voice.reduce((a, x) => a + x)
   const avg1 = sum1 / recorder1.voice.length
 
@@ -104,4 +104,25 @@ const calc = () => {
   const avg2 = sum2 / recorder2.voice.length
 
   return avg1 - avg2
+}
+
+const calcScore = () => {
+  let result = 0
+
+  const longer = recorder1.voice.length > recorder2.voice.length ? recorder1.voice : recorder2.voice
+  const shorter = recorder1.voice.length < recorder2.voice.length ? recorder1.voice : recorder2.voice
+
+  const unit = longer.length / shorter.length
+
+  for (let i = 0; i < shorter.length && i * unit < longer.length; i++) {
+    const longerIndex = Math.floor(i * unit)
+    result += (longer[longerIndex] - shorter[i]) ** 2.0
+  }
+
+  result /= shorter.length
+  result **= 0.5
+
+  const sign = calcAvarageDiff() >= 0 ? 1 : -1
+
+  return sign * result
 }

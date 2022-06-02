@@ -38,6 +38,11 @@ class PitchNote {
 
   static from_frequency(frequency) {
     const midiNum = freqToMidi(frequency)
+    return PitchNote.from_midi(midiNum)
+  }
+
+
+  static from_midi(midiNum) {
     const scale = PitchNote.scale[midiNum % 12]
     const high = Math.floor(midiNum / 12) - 1
 
@@ -54,30 +59,52 @@ class Recorder {
   constructor() {
     this.voice = []
     this.timerId = 0
+    this.isContinued = false
   }
 
   start() {
     this.getPitch()
     this.timerId = setInterval(this.getPitch.bind(this), 10);
-
+    this.isContinued = true
   }
 
   stop() {
-    this.shouldContinue = false
+    this.isContinued = false
     clearInterval(this.timerId)
   }
 
   getPitch() {
     pitch.getPitch((err, frequency) => {
-      if (frequency) {
-        const note = PitchNote.from_frequency(frequency)
-        this.voice.push(note)
+      const midiNum = freqToMidi(frequency)
 
+      if (frequency) {
+        this.voice.push(midiNum)
+
+        const note = PitchNote.from_frequency(frequency)
         select('#result').html(note.to_string())
       } else {
-        this.voice.push(PitchNote.no_sound())
         select('#result').html('No pitch detected')
       }
     })
   }
+}
+
+const recorder1 = new Recorder()
+const recorder2 = new Recorder()
+
+const run = (recorder) => {
+  if (recorder.isContinued)
+    recorder.stop()
+  else
+    recorder.start()
+}
+
+const calc = () => {
+  const sum1 = recorder1.voice.reduce((a, x) => a + x)
+  const avg1 = sum1 / recorder1.voice.length
+
+  const sum2 = recorder2.voice.reduce((a, x) => a + x)
+  const avg2 = sum2 / recorder2.voice.length
+
+  return avg1 - avg2
 }

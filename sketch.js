@@ -11,6 +11,8 @@ Basic Pitch Detection
 let audioContext;
 let mic;
 let pitch;
+const scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
 
 function setup() {
   noCanvas();
@@ -20,7 +22,7 @@ function setup() {
 }
 
 function startPitch() {
-  pitch = ml5.pitchDetection('./model/', audioContext , mic.stream, modelLoaded);
+  pitch = ml5.pitchDetection('./model/', audioContext, mic.stream, modelLoaded);
 }
 
 function modelLoaded() {
@@ -29,9 +31,12 @@ function modelLoaded() {
 }
 
 function getPitch() {
-  pitch.getPitch(function(err, frequency) {
+  pitch.getPitch(function (err, frequency) {
     if (frequency) {
-      select('#result').html(frequency);
+      const midiNum = freqToMidi(frequency)
+      const currentNote = scale[midiNum % 12];
+
+      select('#result').html(currentNote);
     } else {
       select('#result').html('No pitch detected');
     }

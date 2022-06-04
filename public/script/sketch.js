@@ -16,7 +16,7 @@ const loadModel = () =>
 
 
 const modelLoaded = () => {
-  select('#status').html('Model Loaded')
+  // select('#status').html('Model Loaded')
   console.log("Loaded")
 }
 
@@ -78,9 +78,9 @@ class Recorder {
         this.voice.push(midiNum)
 
         const note = PitchNote.from_frequency(frequency)
-        select('#result').html(note.to_string())
+        // select('#result').html(note.to_string())
       } else {
-        select('#result').html('No pitch detected')
+        // select('#result').html('No pitch detected')
       }
     })
   }

@@ -1,8 +1,12 @@
+import React, { useState } from 'react';
 import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react'
-import { Box } from '@chakra-ui/react'
+import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel } from '@chakra-ui/react'
 
 const Home = () => {
+  let [songUrl, setSongUrl] = useState("")
+  let [is1Continued, setIs1Continued] = useState(false)
+  let [is2Continued, setIs2Continued] = useState(false)
+
   return (
     <Container maxW={'5xl'}>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js" type="text/javascript" ></script>
@@ -52,21 +56,20 @@ const Home = () => {
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
-          Youtubeのリンクを貼り付けてください．
+          Youtubeのリンクを貼り付けてください。
         </Text>
 
         <FormControl>
-          <FormLabel htmlFor='email'>Youtube リンク</FormLabel>
-          <Input id='email' type='email' />
+          <FormLabel htmlFor='email'>Youtubeリンク</FormLabel>
+          <Input id='email' type='email' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} />
+          <br /><br />
+          <Button onClick={() => { console.log("test2: ", songUrl); player.useMedia(songUrl) }}>Enter</Button>
         </FormControl>
-
-        <Button onClick={() => run(recorder1)}>読み取り</Button>
-
       </Stack>
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
-          step1.音楽を効く
+          step2.音楽を効く
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
@@ -80,34 +83,39 @@ const Home = () => {
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
-          step2.原曲キーで歌う
+          step3.原曲キーで歌う
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
-          下のボタンを押して曲のサビを原曲キーで歌ってください．
+          ボタンを押して曲のサビを原曲キーで歌ってください。
         </Text>
 
-        <Button onClick={() => run(recorder1)}>One</Button>
+        <Button onClick={() => {
+          run(recorder1);
+          setIs1Continued(!is1Continued)
+        }}>{is1Continued ? "Stop" : "Play"}</Button>
         {/* <p id='status'>ローディング中</p> */}
         {/* <p id='result'>No pitch detected</p> */}
-
       </Stack>
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
-          step3.好きなキーで歌う
+          step4.好きなキーで歌う
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
-          下のボタンを押して曲のサビを好きなキーで歌ってください．
+          ボタンを押して曲のサビを好きなキーで歌ってください。
         </Text>
 
-        <Button onClick={() => run(recorder2)}>Second</Button>
+        <Button onClick={() => {
+          run(recorder2);
+          setIs2Continued(!is2Continued)
+        }}>{is2Continued ? "Stop" : "Play"}</Button>
         {/* <Button onClick={() => alert(calcAvarageDiff())}>Result</Button> */}
       </Stack>
 
       <a href="https://storyset.com/people">People illustrations by Storyset</a>
-    </Container>
+    </Container >
 
   )
 }

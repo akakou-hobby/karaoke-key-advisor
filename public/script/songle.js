@@ -1,5 +1,7 @@
+let player;
+
 window.onSongleAPIReady = (Songle) => {
-    const player =
+    player =
         new Songle.Player({
             mediaElement: "#songle-yt"
         })
@@ -8,7 +10,6 @@ window.onSongleAPIReady = (Songle) => {
     player.addPlugin(new Songle.Plugin.SongleWidget({
         element: "#songle-sw"
     }))
-
 
     player.on("play",
         () => {

@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   optimizeFonts: false,
+  trailingSlash: true
 }
 
 module.exports = nextConfig

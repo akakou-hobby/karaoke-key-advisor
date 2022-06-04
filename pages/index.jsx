@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Flex } from '@chakra-ui/react'
+import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, FormHelperText } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 
 const Home = () => {
@@ -48,7 +48,25 @@ const Home = () => {
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
-          STEP1.音楽を効く
+          step1.音楽の選択
+        </Heading>
+
+        <Text color={'gray.600'} maxW={'4xl'}>
+          Youtubeのリンクを貼り付けてください．
+        </Text>
+
+        <FormControl>
+          <FormLabel htmlFor='email'>Youtube リンク</FormLabel>
+          <Input id='email' type='email' />
+        </FormControl>
+
+        <Button onClick={() => run(recorder1)}>読み取り</Button>
+
+      </Stack>
+
+      <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
+        <Heading as='h3' size='lg'>
+          step1.音楽を効く
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
@@ -62,7 +80,7 @@ const Home = () => {
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
-          STEP2.原曲キーで歌う
+          step2.原曲キーで歌う
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
@@ -77,7 +95,7 @@ const Home = () => {
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
-          STEP3.好きなキーで歌う
+          step3.好きなキーで歌う
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
@@ -85,7 +103,7 @@ const Home = () => {
         </Text>
 
         <Button onClick={() => run(recorder2)}>Second</Button>
-        <Button onClick={() => alert(calcAvarageDiff())}>Result</Button>
+        {/* <Button onClick={() => alert(calcAvarageDiff())}>Result</Button> */}
       </Stack>
 
       <a href="https://storyset.com/people">People illustrations by Storyset</a>

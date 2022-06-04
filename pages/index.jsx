@@ -80,14 +80,17 @@ const Home = () => {
 
         <FormControl>
           <FormLabel htmlFor='email'>Youtubeリンク</FormLabel>
-          <Input id='email' type='email' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} />
+          <Input id='email' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} />
           <br /><br />
-          <Button onClick={() => { console.log("test2: ", songUrl); player.useMedia(songUrl) }}>Enter</Button>
+          <Button onClick={() => {
+            player.useMedia(songUrl)
+            // location.hash = "step2"
+          }}>Enter</Button>
         </FormControl>
       </Stack>
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
-        <Heading as='h3' size='lg'>
+        <Heading as='h3' size='lg' name="step2">
           step2.音楽を効く
         </Heading>
 

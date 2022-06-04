@@ -107,4 +107,3 @@ const calcAvarageDiff = () => {
   avarageDiffG = avg1 - avg2
   return avarageDiffG
 }
-

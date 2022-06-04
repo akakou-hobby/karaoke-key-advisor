@@ -83,7 +83,8 @@ const Home = () => {
           <FormLabel htmlFor='email'>Youtubeリンク</FormLabel>
           <Input id='email' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} />
           <br /><br />
-          <Button onClick={() => {
+          <Button onClick={async () => {
+            await setup()
             player.useMedia(songUrl)
             // location.hash = "step2"
           }}>Enter</Button>

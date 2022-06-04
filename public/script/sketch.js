@@ -5,10 +5,12 @@ let pitch
 let recorder
 let avarageDiffG
 
-function setup() {
-  noCanvas()
+async function setup() {
+  // noCanvas()
   audioContext = getAudioContext()
+
   mic = new p5.AudioIn()
+  await userStartAudio()
   mic.start(loadModel)
 }
 

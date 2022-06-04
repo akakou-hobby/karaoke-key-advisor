@@ -1,3 +1,4 @@
+import Script from 'next/script'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel } from '@chakra-ui/react'
@@ -6,35 +7,35 @@ import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, For
 
 const Home = () => {
   let [songUrl, setSongUrl] = useState("")
+
   let [is1Continued, setIs1Continued] = useState(false)
   let [is2Continued, setIs2Continued] = useState(false)
 
   let [avarageDiff, setAverageDiff] = useState(0)
   let [hasSaved, setHasSaved] = useState(false)
 
-  let ResultStack = () => <div></div>
-
-  if (hasSaved != 0)
-    ResultStack = () => (
-      <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
+  function ResultStack() {
+    if (hasSaved)
+      return (<Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
           結果
         </Heading>
         <Text color={'gray.600'} maxW={'4xl'}>
           キー：{Math.round(avarageDiff)}
         </Text>
-      </Stack>
-    )
-
+      </Stack>)
+    else
+      return <div></div>
+  }
 
   return (
     <Container maxW={'5xl'}>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js" type="text/javascript" ></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js" type="text/javascript"  ></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js" type="text/javascript" ></script>
-      <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript" ></script>
-      <script src="/script/sketch.js" type="text/javascript" ></script>
-      <script src="/script/songle.js" type="text/javascript" ></script>
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="/script/sketch.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="/script/songle.js" type="text/javascript" strategy="beforeInteractive"></Script>
 
       <Head>
         <title>Find Karaoke Key</title>

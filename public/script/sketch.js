@@ -106,6 +106,6 @@ const calcAvarageDiff = () => {
   const sum2 = recorder2.voice.reduce((a, x) => a + x)
   const avg2 = sum2 / recorder2.voice.length
 
-  avarageDiffG = avg1 - avg2
+  avarageDiffG = avg2 - avg1
   return avarageDiffG
 }

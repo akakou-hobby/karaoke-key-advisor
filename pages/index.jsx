@@ -84,7 +84,8 @@ const Home = () => {
           <Input id='email' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} />
           <br /><br />
           <Button onClick={async () => {
-            await setup()
+            // userStartAudio()
+            awaitsetup()
             player.useMedia(songUrl)
             // location.hash = "step2"
           }}>Enter</Button>

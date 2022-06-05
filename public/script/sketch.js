@@ -101,7 +101,7 @@ class Recorder {
     pitch.getPitch((err, frequency) => {
       const midiNum = freqToMidi(frequency)
 
-      if (frequency) {
+      if (frequency && midiNum != 69) {
         this.voice.push(midiNum)
 
         const note = PitchNote.from_frequency(frequency)

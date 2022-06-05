@@ -16,22 +16,21 @@ window.onSongleAPIReady = (Songle) => {
     player.on("ready",
         function (ev) {
             console.log(ev)
+            player.seekToPrevChorusSection()
         });
 
     player.on("play",
         (ev) => {
-            player.seekToNextChorusSection()
+            player.seekToPrevChorusSection()
         }, { offset: -2000 });
 
     player.on('chorusSectionLeave',
         () => {
             player.pause()
-            player.seekToPrevChorusSection()
         }, { offset: +2000 })
 
     player.on("barEnter",
         function (ev) {
-            console.log(ev);
             bpm = ev.data.beat.bpm
         }
     )

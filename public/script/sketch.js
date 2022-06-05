@@ -23,6 +23,27 @@ const modelLoaded = () => {
   console.log("Loaded")
 }
 
+let isMetronomeContinue = false
+
+const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
+
+
+const startMetronome = async (interval = 1000) => {
+  isMetronomeContinue = true
+
+  const osc = new p5.Oscillator('sine')
+
+  while (isMetronomeContinue) {
+    osc.start()
+    await sleep(100)
+    osc.stop()
+
+    await sleep(interval)
+  }
+}
+
+const stopMetrononme = () => isMetronomeContinue = false
+
 
 class PitchNote {
   static scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']

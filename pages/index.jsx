@@ -125,10 +125,12 @@ const Home = () => {
 
         <Button onClick={() => {
           if (record1State == 0) {
+            startMetronome()
             recorder1.start()
             setRecord1State(record1State + 1)
           }
           else if (record1State === 1) {
+            stopMetrononme()
             recorder1.stop()
             setRecord1State(record1State + 1)
           }
@@ -158,10 +160,13 @@ const Home = () => {
 
         <Button onClick={() => {
           if (record2State == 0) {
+            startMetronome()
             recorder2.start()
+
             setRecord2State(record2State + 1)
           }
           else if (record2State === 1) {
+            stopMetrononme()
             recorder2.stop()
             setRecord2State(record2State + 1)
           }

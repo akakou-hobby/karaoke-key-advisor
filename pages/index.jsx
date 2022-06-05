@@ -101,7 +101,7 @@ const Home = () => {
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg' name="step2">
-          step2.音楽を効く
+          step2.音楽を聞く
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>

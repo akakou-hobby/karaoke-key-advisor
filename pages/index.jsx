@@ -83,12 +83,12 @@ const Home = () => {
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
-          Youtubeのリンクを貼り付けてください。
+          Youtubeの動画リンクを貼り付けてください。
         </Text>
 
         <FormControl>
-          <FormLabel htmlFor='email'>Youtubeリンク</FormLabel>
-          <Input id='email' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} />
+          <FormLabel htmlFor='youtubeURL'>Youtubeの動画リンク</FormLabel>
+          <Input id='youtubeURL' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} placeholder="https://www.youtube.com/watch?v=SX_ViT4Ra7k" />
           <br /><br />
           <Button onClick={async () => {
             // userStartAudio()

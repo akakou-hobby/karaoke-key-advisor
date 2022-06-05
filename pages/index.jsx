@@ -4,9 +4,9 @@ import Head from 'next/head'
 import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel } from '@chakra-ui/react'
 
 
-// function roundToTwo(num) {
-//   return +(Math.round(num + "e+2") + "e-2");
-// }
+function roundToTwo(num) {
+  return +(Math.round(num + "e+2") + "e-2");
+}
 
 const Home = () => {
   let [songUrl, setSongUrl] = useState("")
@@ -29,7 +29,7 @@ const Home = () => {
           結果
         </Heading>
         <Text color={'gray.600'} maxW={'4xl'}>
-          キー： {Math.round(avarageDiff)}
+          キー： {roundToTwo(avarageDiff)}
         </Text>
       </Stack>)
     else
@@ -65,6 +65,7 @@ const Home = () => {
           <Text as={'span'} color={'orange.400'}>
             カラオケキーを見つける
           </Text>
+
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'} fontSize='xl'>

@@ -4,24 +4,32 @@ import Head from 'next/head'
 import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel } from '@chakra-ui/react'
 
 
+// function roundToTwo(num) {
+//   return +(Math.round(num + "e+2") + "e-2");
+// }
 
 const Home = () => {
   let [songUrl, setSongUrl] = useState("")
 
-  let [is1Continued, setIs1Continued] = useState(false)
-  let [is2Continued, setIs2Continued] = useState(false)
+  let [record1State, setRecord1State] = useState(0)
+  let [record2State, setRecord2State] = useState(0)
 
   let [avarageDiff, setAverageDiff] = useState(0)
-  let [hasSaved, setHasSaved] = useState(false)
+
+  const stateTable = ["Record", "Stop", "Clear"]
+
+  const hasRecordedDone = function () {
+    return record1State == 2 && record2State == 2
+  }
 
   function ResultStack() {
-    if (hasSaved)
+    if (hasRecordedDone())
       return (<Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
           結果
         </Heading>
         <Text color={'gray.600'} maxW={'4xl'}>
-          キー：{Math.round(avarageDiff)}
+          キー： {Math.round(avarageDiff)}
         </Text>
       </Stack>)
     else
@@ -85,7 +93,7 @@ const Home = () => {
           <br /><br />
           <Button onClick={async () => {
             // userStartAudio()
-            awaitsetup()
+            await setup()
             player.useMedia(songUrl)
             // location.hash = "step2"
           }}>Enter</Button>
@@ -115,10 +123,25 @@ const Home = () => {
         </Text>
 
         <Button onClick={() => {
-          run(recorder1);
-          console.log(1)
-          setIs1Continued(!is1Continued)
-        }}>{is1Continued ? "Stop" : "Record"}</Button>
+          if (record1State == 0) {
+            recorder1.start()
+            setRecord1State(record1State + 1)
+          }
+          else if (record1State === 1) {
+            recorder1.stop()
+            setRecord1State(record1State + 1)
+          }
+          else if (record1State == 2) {
+            // recorder.stop()
+            clearVoice(recorder1)
+            setRecord1State(0)
+          }
+
+          console.log(record1State, record2State)
+
+          if (recorder1.voice.length && recorder2.voice.length)
+            setAverageDiff(calcAvarageDiff())
+        }}>{stateTable[record1State]}</Button>
         {/* <p id='status'>ローディング中</p> */}
         {/* <p id='result'>No pitch detected</p> */}
       </Stack>
@@ -133,17 +156,25 @@ const Home = () => {
         </Text>
 
         <Button onClick={() => {
-          setIs2Continued(!is2Continued)
-          run(recorder2)
-
-          if (hasSaved) {
-            const diff = calcAvarageDiff()
-            console.log(diff)
-            setAverageDiff(diff)
+          if (record2State == 0) {
+            recorder2.start()
+            setRecord2State(record2State + 1)
           }
-          else
-            setHasSaved(true)
-        }}>{is2Continued ? "Stop" : "Record"}</Button>
+          else if (record2State === 1) {
+            recorder2.stop()
+            setRecord2State(record2State + 1)
+          }
+          else if (record2State == 2) {
+            // recorder.stop()
+            clearVoice(recorder2)
+            setRecord2State(0)
+          }
+
+          console.log(record1State, record2State)
+
+          if (recorder1.voice.length && recorder2.voice.length)
+            setAverageDiff(calcAvarageDiff())
+        }}>{stateTable[record2State]}</Button>
       </Stack>
       <ResultStack />
 

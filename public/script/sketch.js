@@ -92,12 +92,12 @@ class Recorder {
 const recorder1 = new Recorder()
 const recorder2 = new Recorder()
 
-const run = (recorder) => {
-  if (recorder.isContinued)
-    recorder.stop()
-  else
-    recorder.start()
-}
+// const run = (recorder) => {
+//   if (recorder.isContinued)
+//     recorder.stop()
+//   else
+//     recorder.start()
+// }
 
 const calcAvarageDiff = () => {
   const sum1 = recorder1.voice.reduce((a, x) => a + x)
@@ -108,4 +108,10 @@ const calcAvarageDiff = () => {
 
   avarageDiffG = avg2 - avg1
   return avarageDiffG
+}
+
+
+const clearVoice = (recorder) => {
+  recorder.stop()
+  recorder.voice = []
 }

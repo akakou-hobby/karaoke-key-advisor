@@ -28,7 +28,10 @@ let isMetronomeContinue = false
 const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
 
 
-const startMetronome = async (interval = 1000) => {
+const startMetronome = async (bpm = 100) => {
+  // const interval = (bpm / 60) * 1000 - 100
+  const interval = (bpm / 60) / 4 * 1000 - 100
+
   isMetronomeContinue = true
 
   const osc = new p5.Oscillator('sine')

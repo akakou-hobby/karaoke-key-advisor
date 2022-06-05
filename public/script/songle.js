@@ -1,4 +1,5 @@
 let player;
+let bpm = 100;
 
 window.onSongleAPIReady = (Songle) => {
     player =
@@ -10,16 +11,30 @@ window.onSongleAPIReady = (Songle) => {
     player.addPlugin(new Songle.Plugin.SongleWidget({
         element: "#songle-sw"
     }))
+    player.addPlugin(new Songle.Plugin.Beat());
+
+    player.on("ready",
+        function (ev) {
+            console.log(ev)
+        });
 
     player.on("play",
-        () => {
+        (ev) => {
             player.seekToNextChorusSection()
         }, { offset: -2000 });
 
     player.on('chorusSectionLeave',
         () => {
             player.pause()
+            player.seekToPrevChorusSection()
         }, { offset: +2000 })
+
+    player.on("barEnter",
+        function (ev) {
+            console.log(ev);
+            bpm = ev.data.beat.bpm
+        }
+    )
 
     player.useMedia("https://www.youtube.com/watch?v=6j7VwJ7sM_k")
 }

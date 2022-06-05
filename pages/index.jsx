@@ -29,7 +29,7 @@ const Home = () => {
           結果
         </Heading>
         <Text color={'gray.600'} maxW={'4xl'}>
-          キー： {roundToTwo(avarageDiff)}
+          キー： {Math.round(avarageDiff)}（{roundToTwo(avarageDiff)}）
         </Text>
       </Stack>)
     else
@@ -70,7 +70,7 @@ const Home = () => {
 
         <Text color={'gray.600'} maxW={'4xl'} fontSize='xl'>
           気持ちよく歌えるカラオケのキーが見つからなくて困っていませんか。 <br />
-          このサイトなら、たった３ステップで気持ちのよいキーをみつけることができます。
+          このサイトなら、たった4ステップで気持ちのよいキーをみつけることができます。
         </Text>
 
         <Image src="/Karaoke-bro.png"></Image>

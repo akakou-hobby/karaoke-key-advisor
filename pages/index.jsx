@@ -1,5 +1,5 @@
 import Script from 'next/script'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel } from '@chakra-ui/react'
 
@@ -46,7 +46,7 @@ const Home = () => {
       <Script src="/script/songle.js" type="text/javascript" strategy="beforeInteractive"></Script>
 
       <Script
-        src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+        src="https://www.googletagmanager.com/gtag/js?id=G-L4HPEME100"
         strategy="afterInteractive"
       />
       <Script id="google-analytics" strategy="afterInteractive">

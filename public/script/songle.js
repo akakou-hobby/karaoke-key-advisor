@@ -1,5 +1,6 @@
 let player;
 let bpm = 100;
+let hasFirst = true
 
 window.onSongleAPIReady = (Songle) => {
     player =
@@ -16,11 +17,16 @@ window.onSongleAPIReady = (Songle) => {
     player.on("ready",
         function (ev) {
             console.log(ev)
-            player.seekToPrevChorusSection()
+            player.pause()
+            hasFirst = true
         });
 
     player.on("play",
         (ev) => {
+            if (hasFirst) {
+                player.seekToPrevChorusSection()
+                hasFirst = false
+            }
             player.seekToPrevChorusSection()
         }, { offset: -2000 });
 

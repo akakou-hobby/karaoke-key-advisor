@@ -1,7 +1,7 @@
 // It based ml5 Example
 let audioContext
 
-async function setup() {
+async function setupAudio() {
   audioContext = getAudioContext()
   await userStartAudio()
 }

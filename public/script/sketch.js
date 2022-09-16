@@ -1,7 +1,8 @@
 // It based ml5 Example
 let audioContext
 
-async function setup() {
+function setup() {
+  noLoop()
   audioContext = getAudioContext()
 }
 
@@ -130,6 +131,7 @@ class EventBinder extends RecorderEvent {
 
 class Recorder {
   constructor(event) {
+    this.interval = 100
     this.timerId = 0
     this.event = event
   }
@@ -146,7 +148,7 @@ class Recorder {
 
     this.timerId = setInterval(() => {
       self.event.onPeriod(self)
-    }, 10)
+    }, this.interval)
   }
 
   stop() {

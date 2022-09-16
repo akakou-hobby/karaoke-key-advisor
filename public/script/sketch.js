@@ -1,9 +1,8 @@
 // It based ml5 Example
 let audioContext
 
-async function setupAudio() {
+async function setup() {
   audioContext = getAudioContext()
-  await userStartAudio()
 }
 
 
@@ -135,8 +134,10 @@ class Recorder {
     this.event = event
   }
 
-  start() {
+  async start() {
     const self = this
+
+    await userStartAudio()
 
     this.mic = new p5.AudioIn()
     this.mic.start(() => {

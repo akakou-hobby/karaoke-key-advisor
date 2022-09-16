@@ -105,7 +105,6 @@ const Home = () => {
           <Input id='youtubeURL' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} placeholder="https://www.youtube.com/watch?v=SX_ViT4Ra7k" />
           <br /><br />
           <Button onClick={async () => {
-            await setupAudio()
             player.useMedia(songUrl)
           }}>Enter</Button>
         </FormControl>

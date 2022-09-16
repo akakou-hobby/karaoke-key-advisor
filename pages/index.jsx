@@ -105,10 +105,8 @@ const Home = () => {
           <Input id='youtubeURL' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} placeholder="https://www.youtube.com/watch?v=SX_ViT4Ra7k" />
           <br /><br />
           <Button onClick={async () => {
-            // userStartAudio()
             await setup()
             player.useMedia(songUrl)
-            // location.hash = "step2"
           }}>Enter</Button>
         </FormControl>
       </Stack>
@@ -137,24 +135,24 @@ const Home = () => {
 
         <Button onClick={() => {
           if (record1State == 0) {
-            startMetronome(bpm)
+            metronome.start()
             recorder1.start()
             setRecord1State(record1State + 1)
           }
           else if (record1State === 1) {
-            stopMetrononme()
+            metronome.stop()
             recorder1.stop()
             setRecord1State(record1State + 1)
           }
           else if (record1State == 2) {
             // recorder.stop()
-            clearVoice(recorder1)
+            collector1.clear()
             setRecord1State(0)
           }
 
           console.log(record1State, record2State)
 
-          if (recorder1.voice.length && recorder2.voice.length)
+          if (collector1.voice.length && collector2.voice.length)
             setAverageDiff(calcAvarageDiff())
         }}>{stateTable[record1State]}</Button>
         {/* <p id='status'>ローディング中</p> */}
@@ -172,25 +170,25 @@ const Home = () => {
 
         <Button onClick={() => {
           if (record2State == 0) {
-            startMetronome(bpm)
+            metronome.start()
             recorder2.start()
 
             setRecord2State(record2State + 1)
           }
           else if (record2State === 1) {
-            stopMetrononme()
+            metronome.stop()
             recorder2.stop()
             setRecord2State(record2State + 1)
           }
           else if (record2State == 2) {
             // recorder.stop()
-            clearVoice(recorder2)
+            collector2.clear()
             setRecord2State(0)
           }
 
           console.log(record1State, record2State)
 
-          if (recorder1.voice.length && recorder2.voice.length)
+          if (collector1.voice.length && collector2.voice.length)
             setAverageDiff(calcAvarageDiff())
         }}>{stateTable[record2State]}</Button>
       </Stack>

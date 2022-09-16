@@ -1,51 +1,38 @@
 // It based ml5 Example
 let audioContext
-let mic
-let pitch
-let recorder
-let avarageDiffG
 
 async function setup() {
-  // noCanvas()
   audioContext = getAudioContext()
-
-  mic = new p5.AudioIn()
   await userStartAudio()
-  mic.start(loadModel)
 }
 
-const loadModel = () =>
-  pitch = ml5.pitchDetection('/model/', audioContext, mic.stream, modelLoaded)
 
+class Metronome {
+  sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
 
-const modelLoaded = () => {
-  // select('#status').html('Model Loaded')
-  console.log("Loaded")
-}
-
-let isMetronomeContinue = false
-
-const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
-
-
-const startMetronome = async (bpm = 100) => {
-  // const interval = (bpm / 60) * 1000 - 100
-  const interval = (bpm / 60) / 4 * 1000 - 100
-
-  isMetronomeContinue = true
-
-  const osc = new p5.Oscillator('sine')
-
-  while (isMetronomeContinue) {
-    osc.start()
-    await sleep(100)
-    osc.stop()
-
-    await sleep(interval)
+  constructor(bpm = 200) {
+    this.interval = (bpm / 60) / 4 * 1000 - 100
+    this.isMetronomeContinue = false
+    this.osc = new p5.Oscillator('sine')
   }
+
+  async start() {
+    this.isMetronomeContinue = true
+    this.continue()
+  }
+
+  async continue() {
+    while (this.isMetronomeContinue) {
+      this.osc.start()
+      await this.sleep(100)
+      this.osc.stop()
+      await this.sleep(this.interval)
+    }
+  }
+
+  stop = () => this.isMetronomeContinue = false
 }
 
-const stopMetrononme = () => isMetronomeContinue = false
 
 
 class PitchNote {
@@ -56,86 +43,138 @@ class PitchNote {
     this.high = high
   }
 
-  to_string() {
+  toString() {
     return `${this.scale}${this.high}`
   }
 
-  static from_frequency(frequency) {
+  static fromFrequency(frequency) {
     const midiNum = freqToMidi(frequency)
-    return PitchNote.from_midi(midiNum)
+    return PitchNote.fromMidi(midiNum)
   }
 
-
-  static from_midi(midiNum) {
+  static fromMidi(midiNum) {
     const scale = PitchNote.scale[midiNum % 12]
     const high = Math.floor(midiNum / 12) - 1
 
     return new PitchNote(scale, high)
   }
 
-  static no_sound() {
+  static noSound() {
     return new PitchNote('', 0)
   }
 }
 
 
-class Recorder {
+class PitchCollector {
   constructor() {
     this.voice = []
-    this.timerId = 0
-    this.isContinued = false
+    this.pitch = null
+
   }
 
-  start() {
-    this.getPitch()
-    this.timerId = setInterval(this.getPitch.bind(this), 10);
-    this.isContinued = true
+  init(recorder) {
+    this.pitch = ml5.pitchDetection('/model/', audioContext, recorder.mic.stream, this.modelLoaded)
   }
 
-  stop() {
-    this.isContinued = false
-    clearInterval(this.timerId)
+  modelLoaded() {
+    console.log("Loaded")
   }
 
-  getPitch() {
-    pitch.getPitch((err, frequency) => {
+  collectPitch() {
+    if (this.pitch == null)
+      return
+
+    const self = this
+
+    this.pitch.getPitch((err, frequency) => {
       const midiNum = freqToMidi(frequency)
 
       if (frequency && midiNum != 69) {
-        this.voice.push(midiNum)
+        console.log("pitch controller: ", self)
+        self.voice.push(midiNum)
 
-        const note = PitchNote.from_frequency(frequency)
-        // select('#result').html(note.to_string())
+        const note = PitchNote.fromFrequency(frequency)
+        console.log("note: ", note)
       } else {
-        // select('#result').html('No pitch detected')
+        //
       }
     })
   }
+
+  clear() {
+    this.voice = []
+  }
 }
 
-const recorder1 = new Recorder()
-const recorder2 = new Recorder()
+class RecorderEvent {
+  constructor() { }
+  onStart() { }
+  onPeriod() { }
+}
 
-// const run = (recorder) => {
-//   if (recorder.isContinued)
-//     recorder.stop()
-//   else
-//     recorder.start()
-// }
+
+// todo: fix name
+class EventBinder extends RecorderEvent {
+  constructor(pitchCollector) {
+    super()
+    this.pitchCollector = pitchCollector
+  }
+
+  onStart(recorder) {
+    this.pitchCollector.init(recorder)
+  }
+
+  onPeriod(recorder) {
+    this.pitchCollector.collectPitch(recorder)
+  }
+}
+
+class Recorder {
+  constructor(event) {
+    this.timerId = 0
+    this.event = event
+  }
+
+  start() {
+    const self = this
+
+    this.mic = new p5.AudioIn()
+    this.mic.start(() => {
+      self.event.onStart(self)
+    })
+
+    this.timerId = setInterval(() => {
+      self.event.onPeriod(self)
+    }, 10)
+  }
+
+  stop() {
+    this.mic.stop()
+    clearInterval(this.timerId)
+  }
+}
+
+
+const collector1 = new PitchCollector()
+const collector2 = new PitchCollector()
+
+const binder1 = new EventBinder(collector1)
+const binder2 = new EventBinder(collector2)
+
+
+const recorder1 = new Recorder(binder1)
+const recorder2 = new Recorder(binder2)
+
+const metronome = new Metronome()
 
 const calcAvarageDiff = () => {
-  const sum1 = recorder1.voice.reduce((a, x) => a + x)
-  const avg1 = sum1 / recorder1.voice.length
+  const sum1 = collector1.voice.reduce((a, x) => a + x)
+  const avg1 = sum1 / collector1.voice.length
 
-  const sum2 = recorder2.voice.reduce((a, x) => a + x)
-  const avg2 = sum2 / recorder2.voice.length
+  const sum2 = collector2.voice.reduce((a, x) => a + x)
+  const avg2 = sum2 / collector2.voice.length
 
-  avarageDiffG = avg2 - avg1
+  const avarageDiffG = avg2 - avg1
   return avarageDiffG
 }
 
-
-const clearVoice = (recorder) => {
-  recorder.stop()
-  recorder.voice = []
-}

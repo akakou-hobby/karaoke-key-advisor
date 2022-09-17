@@ -31,23 +31,31 @@ const Home = () => {
 
   useEffect(() => {
     recorder1.onPeriodHook = () => {
-      const len1 = recorder1.event.pitchCollector.voice.length
-      if (voiceLength1 !== len1) {
-        setVoiceLength1(len1)
-        setIsRecording1(true);
+      const len = recorder1.event.pitchCollector.voice.length
+      const voiceAppended = voiceLength1 !== len
+
+      if (voiceAppended) {
+        setVoiceLength1(len)
+        setIsRecording1(true)
       }
     }
-  }, [voiceLength1, setVoiceLength1])
+
+    setIsRecording1(isRecording1 && record1State !== 2);
+  }, [voiceLength1, setVoiceLength1, record1State, isRecording1])
 
   useEffect(() => {
     recorder2.onPeriodHook = () => {
-      const len2 = recorder2.event.pitchCollector.voice.length
-      if (voiceLength2 !== len2) {
-        setVoiceLength2(len2)
+      const len = recorder2.event.pitchCollector.voice.length
+      const voiceAppended = voiceLength2 !== len
+
+      if (voiceAppended) {
+        setVoiceLength2(len)
         setIsRecording2(true)
       }
     }
-  }, [voiceLength2, setVoiceLength2])
+
+    setIsRecording2(isRecording2 && record2State !== 2);
+  }, [voiceLength2, setVoiceLength2, record2State, isRecording2])
 
   const hasRecordedDone = function () {
     return record1State == 2 && record2State == 2

@@ -29,11 +29,15 @@ export default async function search(
   const key = process.env.YOUTUBE_API_KEY;
   const type = "video";
   const part = "snippet";
+  const maxResults = 5; // default
+  const videoCategoryId = "10"; // search for only Music category
   const params = {
     key,
+    maxResults,
     part,
     q,
     type,
+    videoCategoryId,
   };
 
   const { data } = await axios.get(SEARCH_ENDPOINT, { params });

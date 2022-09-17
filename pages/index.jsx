@@ -1,7 +1,7 @@
 import Script from 'next/script'
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel } from '@chakra-ui/react'
+import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Center } from '@chakra-ui/react'
 
 
 function roundToTwo(num) {
@@ -10,8 +10,8 @@ function roundToTwo(num) {
 
 const RecordingIndicator = ({ isRecording }) => (
   isRecording
-    ? <Container style={{ background: "green" }}>Recording</Container>
-    : <Container style={{ background: "red" }}>Not Recording</Container>
+    ? <Container bg='green.500'><Center h='3em'>Recording</Center></Container>
+    : <Container bg='red.400'><Center h='3em'>Not Recording</Center></Container>
 )
 
 const Home = () => {
@@ -40,7 +40,7 @@ const Home = () => {
       }
     }
 
-    setIsRecording1(isRecording1 && record1State !== 2);
+    setIsRecording1(isRecording1 && record1State === 1);
   }, [voiceLength1, setVoiceLength1, record1State, isRecording1])
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const Home = () => {
       }
     }
 
-    setIsRecording2(isRecording2 && record2State !== 2);
+    setIsRecording2(isRecording2 && record2State === 1);
   }, [voiceLength2, setVoiceLength2, record2State, isRecording2])
 
   const hasRecordedDone = function () {

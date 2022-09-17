@@ -10,11 +10,11 @@ function roundToTwo(num) {
 
 const RecordingIndicator = ({ isRecording, hasStarted }) => {
     if (isRecording) {
-      return <Container bg='green.500'><Center h='3em'>Recording</Center></Container>
+      return <Center h='3em' bg='green.500'>Recording</Center>
     } else if (hasStarted) {
-      return <Container bg='red.400'><Center h='3em'>歌い始めると録音を開始します……</Center></Container>
+      return <Center h='3em' bg='red.400'>歌い始めると録音を開始します……</Center>
     } else {
-      return <Container bg='red.400'><Center h='3em'>Not Recording</Center></Container>
+      return <Center h='3em' bg='red.400'>Not Recording</Center>
     }
 }
 

@@ -42,7 +42,10 @@ const Home = () => {
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
       <Script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="/script/sketch.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="/script/metronome.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="/script/recorder.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="/script/pitch.js" type="text/javascript" strategy="beforeInteractive"></Script>
+      <Script src="/script/main.js" type="text/javascript" strategy="beforeInteractive"></Script>
       <Script src="/script/songle.js" type="text/javascript" strategy="beforeInteractive"></Script>
 
       <Script

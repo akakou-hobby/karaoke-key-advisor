@@ -61,12 +61,23 @@ const SongSearchResult = ({ songs, onSelect }) => {
     content = <Text>検索結果が見つかりませんでした</Text>;
   } else {
     content = songs.map(({ id, title, thumbnails }) => (
-      <Box key={id}>
-        <Button display="block" is="FullWidth" onClick={() => onSelect(id)}>
-          <Heading as="h5" size="sm" marginTop="2" marginBottom="2">
+      <Box key={id} bg="gray.100" borderRadius="lg" p="2">
+        <Button
+          display="block"
+          is="FullWidth"
+          width="100%"
+          onClick={() => onSelect(id)}
+        >
+          <Heading
+            as="h5"
+            size="sm"
+            marginTop="2"
+            marginBottom="2"
+            justifySelf="left"
+          >
             {title}
           </Heading>
-          <Image src={thumbnails.medium.url} alt="" />
+          <Image src={thumbnails.medium.url} alt="" margin="2" />
         </Button>
       </Box>
     ));

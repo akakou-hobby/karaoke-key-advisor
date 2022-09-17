@@ -326,8 +326,12 @@ const Home = () => {
           step1.音楽の選択
         </Heading>
 
+        <Heading as="h4" size="g">
+          選択肢a. 検索を使う方法
+        </Heading>
+
         <FormControl>
-          <FormLabel htmlFor="q">楽曲タイトルで YouTube を検索</FormLabel>
+          <FormLabel htmlFor="q">楽曲タイトルで YouTube の動画を検索し、動画を一つ選択してください。</FormLabel>
           <Input
             id="q"
             spacing={{ base: 8, md: 10 }}
@@ -363,6 +367,12 @@ const Home = () => {
           }}
         />
 
+
+        <br />
+        <Heading as="h4" size="g">
+          選択肢b. URLを使う方法
+        </Heading>
+
         <FormControl>
           <FormLabel htmlFor="youtubeURL">
             <a
@@ -372,7 +382,7 @@ const Home = () => {
             >
               Youtube
             </a>
-            の動画リンク
+            の動画リンクからも、楽曲タイトルの設定ができます。
           </FormLabel>
           <Input
             id="youtubeURL"

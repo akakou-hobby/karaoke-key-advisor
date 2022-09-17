@@ -342,7 +342,7 @@ const Home = () => {
           onSelect={(songId) => {
             const url = songIdToUrl(songId);
             setSongUrl(url);
-            setPlayerSong(songUrl);
+            setPlayerSong(url);
           }}
         />
 

@@ -159,8 +159,12 @@ const SongSearchResult = ({ songs, onSelect }) => {
             <Image
               src={thumbnails.medium.url}
               alt=""
-              margin="2"
-              display="block"
+              style={{
+                maxWidth: "calc(100% - 1rem)",
+                maxHeight: "auto",
+                objectFit: "contain",
+                margin: "0.5rem",
+              }}
             />
           </Button>
         </Box>

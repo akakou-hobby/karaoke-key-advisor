@@ -37,7 +37,7 @@ window.onSongleAPIReady = (Songle) => {
 
     player.on("barEnter",
         function (ev) {
-            bpm = ev.data.beat.bpm
+            metronome.setIntervalTime(ev.data.beat.bpm)
         }
     )
 

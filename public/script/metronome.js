@@ -1,10 +1,14 @@
 class Metronome {
   sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
 
-  constructor(bpm = 200) {
-    this.interval = (bpm / 60) / 4 * 1000 - 100
+  constructor(bpm = 100) {
     this.isMetronomeContinue = false
     this.osc = new p5.Oscillator('sine')
+    this.setIntervalTime(bpm)
+  }
+
+  setIntervalTime(bpm) {
+    this.interval = (bpm / 60) / 4 * 1000 - 100
   }
 
   async start() {

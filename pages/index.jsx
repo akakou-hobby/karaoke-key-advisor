@@ -21,6 +21,8 @@ function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
 }
 
+const songIdToUrl = (id) => `https://youtu.be/${id}`;
+
 const RecordingIndicator = ({ isRecording, hasStarted }) => {
   if (isRecording) {
     return (
@@ -43,13 +45,13 @@ const RecordingIndicator = ({ isRecording, hasStarted }) => {
   }
 };
 
-const SongSearchResult = ({ songs }) => {
+const SongSearchResult = ({ songs, onSelect }) => {
   if (songs === null) {
     return null;
   }
 
   const heading = (
-    <Heading as={"h4"} size="md">
+    <Heading as={"h4"} size="md" marginTop="4">
       検索結果
     </Heading>
   );
@@ -60,10 +62,12 @@ const SongSearchResult = ({ songs }) => {
   } else {
     content = songs.map(({ id, title, thumbnails }) => (
       <Box key={id}>
-        <Heading as="h5" size="sm" marginTop="4" marginBottom="2">
-          {title}
-        </Heading>
-        <Image src={thumbnails.medium.url} alt="" />
+        <Button display="block" is="FullWidth" onClick={() => onSelect(id)}>
+          <Heading as="h5" size="sm" marginTop="2" marginBottom="2">
+            {title}
+          </Heading>
+          <Image src={thumbnails.medium.url} alt="" />
+        </Button>
       </Box>
     ));
   }
@@ -276,7 +280,13 @@ const Home = () => {
           &nbsp;&nbsp;
         </FormControl>
 
-        <SongSearchResult songs={searchedSongs} />
+        <SongSearchResult
+          songs={searchedSongs}
+          onSelect={(songId) => {
+            const url = songIdToUrl(songId);
+            setSongUrl(url);
+          }}
+        />
 
         <Text color={"gray.600"} maxW={"4xl"}>
           <a

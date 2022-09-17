@@ -189,6 +189,7 @@ const Home = () => {
             // recorder.stop()
             collector1.clear()
             setRecord1State(0)
+            setVoiceLength1(0)
           }
 
           console.log(record1State, record2State)
@@ -226,6 +227,7 @@ const Home = () => {
             // recorder.stop()
             collector2.clear()
             setRecord2State(0)
+            setVoiceLength2(0)
           }
 
           console.log(record1State, record2State)

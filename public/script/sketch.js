@@ -1,8 +1,4 @@
-// It based ml5 Example
-let _getAudioContext
-
 function setup() {
-  _getAudioContext = getAudioContext
   noLoop()
 }
 

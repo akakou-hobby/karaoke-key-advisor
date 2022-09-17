@@ -35,9 +35,20 @@ const callSearchApi = async (q, apiKey) => {
   };
 
   console.log("calling youtube api...")
-  const resp = await axios.get(SEARCH_ENDPOINT, {
-    params,
-  });
+  let resp;
+
+  try {
+    resp = await axios.get(SEARCH_ENDPOINT, {
+      params,
+    });
+  } catch (err) {
+    if (err?.response?.status == 403) {
+      alert("YouTube の API 制限に到達しました。直接 URL を入力してください。")
+    } else {
+      throw err
+    }
+    return
+  }
   console.log("called youtube api")
   console.log({resp})
 
@@ -375,8 +386,13 @@ const Home = ({ apiKey }) => {
           <br />
           <Button
             onClick={async () => {
-              const { data } = await callSearchApi(searchTitle, apiKey);
-              const songs = searchResponseToSongs(data);
+              const resp = await callSearchApi(searchTitle, apiKey);
+
+              if (!resp?.data) {
+                return
+              }
+
+              const songs = searchResponseToSongs(resp.data);
               setSearchedSongs(songs);
               setPlayerSong(songUrl);
               console.log({ songs });

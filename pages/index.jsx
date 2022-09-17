@@ -34,9 +34,12 @@ const callSearchApi = async (q, apiKey) => {
     videoCategoryId,
   };
 
+  console.log("calling youtube api...")
   const resp = await axios.get(SEARCH_ENDPOINT, {
     params,
   });
+  console.log("called youtube api")
+  console.log({resp})
 
   return resp;
 }

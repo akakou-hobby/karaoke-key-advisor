@@ -11,11 +11,35 @@ const STATUS_STOPPED = 3
 
 const STATE_TABLE = ["Record", "Stop", "Stop", "Clear"]
 
+const SEARCH_ENDPOINT = "https://www.googleapis.com/youtube/v3/search";
+
 function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
 }
 
 const songIdToUrl = (id) => `https://youtu.be/${id}`;
+
+const callSearchApi = async (q, apiKey) => {
+  const type = "video";
+  const part = "snippet";
+  const maxResults = 5; // default
+  const videoCategoryId = "10"; // search for only Music category
+
+  const params = {
+    key: apiKey,
+    maxResults,
+    part,
+    q,
+    type,
+    videoCategoryId,
+  };
+
+  const resp = await axios.get(SEARCH_ENDPOINT, {
+    params,
+  });
+
+  return resp;
+}
 
 const RecordingStack = ({ number, title }) => {
   const candidates = [
@@ -181,7 +205,7 @@ const SongSearchResult = ({ songs, onSelect }) => {
 };
 
 
-const Home = ({ key }) => {
+const Home = ({ apiKey }) => {
   const [searchTitle, setSearchTitle] = useState("");
   const [searchedSongs, setSearchedSongs] = useState(null);
 
@@ -348,9 +372,7 @@ const Home = ({ key }) => {
           <br />
           <Button
             onClick={async () => {
-              const { data } = await axios.get("/api/youtube/search/", {
-                params: { q: searchTitle },
-              });
+              const { data } = await callSearchApi(searchTitle, apiKey);
               const songs = searchResponseToSongs(data);
               setSearchedSongs(songs);
               setPlayerSong(songUrl);
@@ -433,9 +455,10 @@ const Home = ({ key }) => {
 };
 
 export async function getServerSideProps(context) {
-  const key = process.env.YOUTUBE_API_KEY;
+  const apiKey = process.env.YOUTUBE_API_KEY;
+
   return {
-    props: { key }, // will be passed to the page component as props
+    props: { apiKey }, // will be passed to the page component as props
   };
 }
 

@@ -1,8 +1,8 @@
 import Script from 'next/script'
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Link, Center, ColorModeProvider } from '@chakra-ui/react'
-
+import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Box, } from '@chakra-ui/react'
+import axios from "axios";
 
 const STATUS_READY = 0
 const STATUS_START = 1
@@ -14,6 +14,8 @@ const STATE_TABLE = ["Record", "Stop", "Stop", "Clear"]
 function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
 }
+
+const songIdToUrl = (id) => `https://youtu.be/${id}`;
 
 const RecordingStack = ({ number, title }) => {
   const candidates = [
@@ -87,11 +89,105 @@ const RecordingStack = ({ number, title }) => {
   )
 }
 
+const SongSearchResult = ({ songs, onSelect }) => {
+  const [selectedSongId, setSelectedSongId] = useState("");
+
+  if (songs === null) {
+    return null;
+  }
+
+  const heading = (
+    <Heading as={"h4"} size="md" marginTop="4">
+      検索結果
+    </Heading>
+  );
+  let content;
+
+  if (songs.length < 1) {
+    content = (
+      <>
+        <Text color="gray.600" maxW={"4xl"}>
+          検索結果が見つかりませんでした。
+        </Text >
+        <Text color="gray.600" maxW={"4xl"}>
+          再度検索するか、{" "}
+          <a
+            href="https://www.youtube.com/results"
+            target="_blank"
+            rel="noreferrer"
+            style={{ textDecoration: "underline" }}
+          >
+            YouTube
+          </a>{" "}
+          から動画の URL を直接貼り付けることもできます。
+        </Text>
+      </>
+    );
+  } else {
+    content = songs.map(({ id, title, thumbnails }) => {
+      const borderGray = selectedSongId === id ? "gray.400" : "gray.200";
+
+      return (
+        <Box
+          key={id}
+          bg="gray.50"
+          border="2px"
+          borderColor={borderGray}
+          p="1"
+          style={{ margin: "1em" }}
+          borderRadius="lg"
+        >
+          <Button
+            display="block"
+            is="FullWidth"
+            style={{ width: "100%" }}
+            onClick={() => {
+              setSelectedSongId(id);
+              onSelect(id);
+            }}
+            p="1"
+          >
+            <Heading
+              as="h5"
+              size="sm"
+              margin="3"
+              justifySelf="left"
+              width="fit-content"
+            >
+              {title}
+            </Heading>
+            <Image
+              src={thumbnails.medium.url}
+              alt=""
+              margin="2"
+              display="block"
+            />
+          </Button>
+        </Box>
+      );
+    });
+  }
+
+  return (
+    <Stack>
+      {heading}
+      {content}
+    </Stack>
+  );
+};
+
+
 const Home = () => {
-  let [songUrl, setSongUrl] = useState("")
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchedSongs, setSearchedSongs] = useState(null);
 
   let [avarageDiff, setAverageDiff] = useState(0)
   let [hasFinished, setHasFinished] = useState(false)
+  let [songUrl, setSongUrl] = useState("")
+
+  const setPlayerSong = (url) => {
+    player.useMedia(url);
+  };
 
   useEffect(() => {
     setInterval(function () {
@@ -106,32 +202,77 @@ const Home = () => {
     }, 500)
   })
 
+  const searchResponseToSongs = ({ items }) => {
+    // see search.ts for response type definition
+    return items.map((item) => ({
+      id: item.id.videoId,
+      title: item.snippet.title,
+      thumbnails: item.snippet.thumbnails,
+    }));
+  };
 
   function ResultStack() {
     if (hasFinished)
-      return (<Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
-        <Heading as='h3' size='lg'>
-          結果
-        </Heading>
-        <Text color={'gray.600'} maxW={'4xl'}>
-          キー： {Math.round(avarageDiff)}（{roundToTwo(avarageDiff)}）
-        </Text>
-      </Stack>)
-    else
-      return <div></div>
+      return (
+        <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
+          <Heading as="h3" size="lg">
+            結果
+          </Heading>
+          <Text color={"gray.600"} maxW={"4xl"}>
+            キー： {Math.round(avarageDiff)}（{roundToTwo(avarageDiff)}）
+          </Text>
+        </Stack>
+      );
+    else return <div></div>;
   }
 
   return (
-    <Container maxW={'5xl'}>
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="/script/metronome.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="/script/recorder.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="/script/pitch.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="/script/main.js" type="text/javascript" strategy="beforeInteractive"></Script>
-      <Script src="/script/songle.js" type="text/javascript" strategy="beforeInteractive"></Script>
+    <Container maxW={"5xl"}>
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="https://unpkg.com/ml5@latest/dist/ml5.min.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="/script/metronome.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="/script/recorder.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="/script/pitch.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="/script/main.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        src="/script/songle.js"
+        type="text/javascript"
+        strategy="beforeInteractive"
+      ></Script>
 
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-L4HPEME100"
@@ -154,24 +295,25 @@ const Home = () => {
       </Head>
 
       <Stack
-        textAlign={'center'}
-        align={'center'}
+        textAlign={"center"}
+        align={"center"}
         spacing={{ base: 8, md: 10 }}
-        py={{ base: 20, md: 28 }}>
-
+        py={{ base: 20, md: 28 }}
+      >
         <Heading
           fontWeight={600}
-          fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
-          lineHeight={'100%'}>
-          あなたに最適な {' '} <br />
-          <Text as={'span'} color={'orange.400'}>
+          fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
+          lineHeight={"100%"}
+        >
+          あなたに最適な <br />
+          <Text as={"span"} color={"orange.400"}>
             カラオケキーを見つける
           </Text>
-
         </Heading>
 
-        <Text color={'gray.600'} maxW={'4xl'} fontSize='xl'>
-          気持ちよく歌えるカラオケのキーが見つからなくて困っていませんか。 <br />
+        <Text color={"gray.600"} maxW={"4xl"} fontSize="xl">
+          気持ちよく歌えるカラオケのキーが見つからなくて困っていませんか。{" "}
+          <br />
           このサイトなら、たった4ステップで気持ちのよいキーをみつけることができます。
         </Text>
 
@@ -180,32 +322,86 @@ const Home = () => {
       <br />
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
-        <Heading as='h3' size='lg'>
+        <Heading as="h3" size="lg">
           step1.音楽の選択
         </Heading>
 
-        <Text color={'gray.600'} maxW={'4xl'}>
-          <a href='https://www.youtube.com/results' target="_blank" rel="noreferrer">Youtube</a>の動画リンクを貼り付けてください。
-        </Text>
+        <FormControl>
+          <FormLabel htmlFor="q">楽曲タイトルで YouTube を検索</FormLabel>
+          <Input
+            id="q"
+            spacing={{ base: 8, md: 10 }}
+            onInput={(e) => {
+              setSearchTitle(e.target.value);
+            }}
+            placeholder="Lemon"
+          />
+          <br />
+          <br />
+          <Button
+            onClick={async () => {
+              const { data } = await axios.get("/api/youtube/search/", {
+                params: { q: searchTitle },
+              });
+              const songs = searchResponseToSongs(data);
+              setSearchedSongs(songs);
+              setPlayerSong(songUrl);
+              console.log({ songs });
+            }}
+          >
+            Search
+          </Button>
+          &nbsp;&nbsp;
+        </FormControl>
+
+        <SongSearchResult
+          songs={searchedSongs}
+          onSelect={(songId) => {
+            const url = songIdToUrl(songId);
+            setSongUrl(url);
+            setPlayerSong(url);
+          }}
+        />
 
         <FormControl>
-          <FormLabel htmlFor='youtubeURL'><a href='https://www.youtube.com/results' target="_blank" rel="noreferrer">Youtube</a>の動画リンク</FormLabel>
-          <Input id='youtubeURL' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} placeholder="https://www.youtube.com/watch?v=SX_ViT4Ra7k" />
-          <br /><br />
-          <Button onClick={async () => {
-            player.useMedia(songUrl)
-          }}>Enter</Button>
+          <FormLabel htmlFor="youtubeURL">
+            <a
+              href="https://www.youtube.com/results"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Youtube
+            </a>
+            の動画リンク
+          </FormLabel>
+          <Input
+            id="youtubeURL"
+            value={songUrl}
+            spacing={{ base: 8, md: 10 }}
+            onInput={(e) => {
+              setSongUrl(e.target.value);
+            }}
+            placeholder="https://www.youtube.com/watch?v=SX_ViT4Ra7k"
+          />
+          <br />
+          <br />
+          <Button
+            onClick={async () => {
+              setPlayerSong(songUrl);
+            }}
+          >
+            Enter
+          </Button>
           &nbsp;&nbsp;
-
         </FormControl>
       </Stack>
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
-        <Heading as='h3' size='lg' name="step2">
+        <Heading as="h3" size="lg" name="step2">
           step2.音楽を聞く
         </Heading>
 
-        <Text color={'gray.600'} maxW={'4xl'}>
+        <Text color={"gray.600"} maxW={"4xl"}>
           まず、対象の曲を聞いてください。クリックすると曲のサビが流れます。
         </Text>
 
@@ -218,9 +414,8 @@ const Home = () => {
 
       <ResultStack />
       <a href="https://storyset.com/people">People illustrations by Storyset</a>
-    </Container >
+    </Container>
+  );
+};
 
-  )
-}
-
-export default Home
+export default Home;

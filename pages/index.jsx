@@ -58,7 +58,25 @@ const SongSearchResult = ({ songs, onSelect }) => {
   let content;
 
   if (songs.length < 1) {
-    content = <Text>検索結果が見つかりませんでした</Text>;
+    content = (
+      <>
+        <Text color={"gray.600"} maxW={"4xl"}>
+          検索結果が見つかりませんでした。
+        </Text>
+        <Text color={"gray.600"} maxW={"4xl"}>
+          再度検索するか、{" "}
+          <a
+            href="https://www.youtube.com/results"
+            target="_blank"
+            rel="noreferrer"
+            style={{ textDecoration: "underline" }}
+          >
+            YouTube
+          </a>{" "}
+          から動画の URL を直接貼り付けることもできます。
+        </Text>
+      </>
+    );
   } else {
     content = songs.map(({ id, title, thumbnails }) => (
       <Box
@@ -310,19 +328,9 @@ const Home = () => {
           onSelect={(songId) => {
             const url = songIdToUrl(songId);
             setSongUrl(url);
+            console.log({ url, songId });
           }}
         />
-
-        <Text color={"gray.600"} maxW={"4xl"}>
-          <a
-            href="https://www.youtube.com/results"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Youtube
-          </a>
-          の動画リンクを貼り付けてください。
-        </Text>
 
         <FormControl>
           <FormLabel htmlFor="youtubeURL">
@@ -337,6 +345,7 @@ const Home = () => {
           </FormLabel>
           <Input
             id="youtubeURL"
+            value={songUrl}
             spacing={{ base: 8, md: 10 }}
             onInput={(e) => {
               setSongUrl(e.target.value);

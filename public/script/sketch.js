@@ -6,8 +6,6 @@ function setup() {
   noLoop()
 }
 
-const runOnOtherThread = (f) => setTimeout(f, 1)
-
 
 class Metronome {
   sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
@@ -23,9 +21,7 @@ class Metronome {
 
     this.isMetronomeContinue = true
 
-    runOnOtherThread(() => {
-      this.continue()
-    })
+    this.continue()
   }
 
   async continue() {
@@ -39,7 +35,6 @@ class Metronome {
 
   stop = () => this.isMetronomeContinue = false
 }
-
 
 
 class PitchNote {
@@ -81,9 +76,7 @@ class PitchCollector {
   init(recorder) {
     const self = this
 
-    runOnOtherThread(() => {
-      self.pitch = ml5.pitchDetection('/model/', recorder.audioContext, recorder.mic.stream, this.modelLoaded)
-    })
+    self.pitch = ml5.pitchDetection('/model/', recorder.audioContext, recorder.mic.stream, this.modelLoaded)
   }
 
   modelLoaded() {
@@ -205,10 +198,8 @@ const calcAvarageDiff = () => {
   const sum2 = collector2.voice.reduce((a, x) => a + x)
   const avg2 = sum2 / collector2.voice.length
 
-  const avarageDiffG = avg2 - avg1
-  return avarageDiffG
+  return avg2 - avg1
 }
-
 
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === 'hidden') {
@@ -217,4 +208,4 @@ document.addEventListener("visibilitychange", () => {
 
     metronome.stop()
   }
-});
+})

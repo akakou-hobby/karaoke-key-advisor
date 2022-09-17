@@ -1,7 +1,7 @@
 import Script from 'next/script'
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Center } from '@chakra-ui/react'
+import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Link, Center } from '@chakra-ui/react'
 
 
 function roundToTwo(num) {
@@ -143,16 +143,18 @@ const Home = () => {
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
-          Youtubeの動画リンクを貼り付けてください。
+          <a href='https://www.youtube.com/results' target="_blank">Youtube</a>の動画リンクを貼り付けてください。
         </Text>
 
         <FormControl>
-          <FormLabel htmlFor='youtubeURL'>Youtubeの動画リンク</FormLabel>
+          <FormLabel htmlFor='youtubeURL'><a href='https://www.youtube.com/results' target="_blank">Youtube</a>の動画リンク</FormLabel>
           <Input id='youtubeURL' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} placeholder="https://www.youtube.com/watch?v=SX_ViT4Ra7k" />
           <br /><br />
           <Button onClick={async () => {
             player.useMedia(songUrl)
           }}>Enter</Button>
+          &nbsp;&nbsp;
+
         </FormControl>
       </Stack>
 

@@ -149,6 +149,10 @@ const Home = () => {
 
   const stateTable = ["Record", "Stop", "Clear"];
 
+  const setPlayerSong = (url) => {
+    player.useMedia(url);
+  };
+
   useEffect(() => {
     recorder1.onPeriodHook = () => {
       const len = recorder1.event.pitchCollector.voice.length;
@@ -324,6 +328,7 @@ const Home = () => {
               });
               const songs = searchResponseToSongs(data);
               setSearchedSongs(songs);
+              setPlayerSong(songUrl);
               console.log({ songs });
             }}
           >
@@ -337,7 +342,7 @@ const Home = () => {
           onSelect={(songId) => {
             const url = songIdToUrl(songId);
             setSongUrl(url);
-            console.log({ url, songId });
+            setPlayerSong(songUrl);
           }}
         />
 
@@ -365,7 +370,7 @@ const Home = () => {
           <br />
           <Button
             onClick={async () => {
-              player.useMedia(songUrl);
+              setPlayerSong(songUrl);
             }}
           >
             Enter

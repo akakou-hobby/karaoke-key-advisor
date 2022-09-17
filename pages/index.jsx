@@ -1,11 +1,21 @@
 import Script from 'next/script'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Link } from '@chakra-ui/react'
+import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Link, Center } from '@chakra-ui/react'
 
 
 function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
+}
+
+const RecordingIndicator = ({ isRecording, hasStarted }) => {
+    if (isRecording) {
+      return <Center h='3em' bg='green.500'>Recording</Center>
+    } else if (hasStarted) {
+      return <Center h='3em' bg='red.400'>歌い始めると録音を開始します……</Center>
+    } else {
+      return <Center h='3em' bg='red.400'>Not Recording</Center>
+    }
 }
 
 const Home = () => {
@@ -16,7 +26,40 @@ const Home = () => {
 
   let [avarageDiff, setAverageDiff] = useState(0)
 
+  const [voiceLength1, setVoiceLength1] = useState(0)
+  const [voiceLength2, setVoiceLength2] = useState(0)
+  const [isRecording1, setIsRecording1] = useState(false)
+  const [isRecording2, setIsRecording2] = useState(false)
+
   const stateTable = ["Record", "Stop", "Clear"]
+
+  useEffect(() => {
+    recorder1.onPeriodHook = () => {
+      const len = recorder1.event.pitchCollector.voice.length
+      const voiceAppended = voiceLength1 !== len
+
+      if (voiceAppended) {
+        setVoiceLength1(len)
+        setIsRecording1(true)
+      }
+    }
+
+    setIsRecording1(isRecording1 && record1State === 1);
+  }, [voiceLength1, setVoiceLength1, record1State, isRecording1])
+
+  useEffect(() => {
+    recorder2.onPeriodHook = () => {
+      const len = recorder2.event.pitchCollector.voice.length
+      const voiceAppended = voiceLength2 !== len
+
+      if (voiceAppended) {
+        setVoiceLength2(len)
+        setIsRecording2(true)
+      }
+    }
+
+    setIsRecording2(isRecording2 && record2State === 1);
+  }, [voiceLength2, setVoiceLength2, record2State, isRecording2])
 
   const hasRecordedDone = function () {
     return record1State == 2 && record2State == 2
@@ -152,6 +195,7 @@ const Home = () => {
             // recorder.stop()
             collector1.clear()
             setRecord1State(0)
+            setVoiceLength1(0)
           }
 
           console.log(record1State, record2State)
@@ -161,6 +205,7 @@ const Home = () => {
         }}>{stateTable[record1State]}</Button>
         {/* <p id='status'>ローディング中</p> */}
         {/* <p id='result'>No pitch detected</p> */}
+        <RecordingIndicator isRecording={isRecording1} hasStarted={record1State === 1} />
       </Stack>
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
@@ -188,6 +233,7 @@ const Home = () => {
             // recorder.stop()
             collector2.clear()
             setRecord2State(0)
+            setVoiceLength2(0)
           }
 
           console.log(record1State, record2State)
@@ -195,6 +241,7 @@ const Home = () => {
           if (collector1.voice.length && collector2.voice.length)
             setAverageDiff(calcAvarageDiff())
         }}>{stateTable[record2State]}</Button>
+        <RecordingIndicator isRecording={isRecording2} hasStarted={record2State === 1} />
       </Stack>
       <ResultStack />
 

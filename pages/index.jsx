@@ -143,11 +143,11 @@ const Home = () => {
         </Heading>
 
         <Text color={'gray.600'} maxW={'4xl'}>
-          <a href='https://www.youtube.com/results' target="_blank">Youtube</a>の動画リンクを貼り付けてください。
+          <a href='https://www.youtube.com/results' target="_blank" rel="noreferrer">Youtube</a>の動画リンクを貼り付けてください。
         </Text>
 
         <FormControl>
-          <FormLabel htmlFor='youtubeURL'><a href='https://www.youtube.com/results' target="_blank">Youtube</a>の動画リンク</FormLabel>
+          <FormLabel htmlFor='youtubeURL'><a href='https://www.youtube.com/results' target="_blank" rel="noreferrer">Youtube</a>の動画リンク</FormLabel>
           <Input id='youtubeURL' spacing={{ base: 8, md: 10 }} onInput={(e) => { setSongUrl(e.target.value) }} placeholder="https://www.youtube.com/watch?v=SX_ViT4Ra7k" />
           <br /><br />
           <Button onClick={async () => {

@@ -1,10 +1,10 @@
 import axios from "axios";
-import { METHODS } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const SEARCH_ENDPOINT = "https://www.googleapis.com/youtube/v3/search";
 
 enum HTTP_STATUS {
+  BAD_REQUEST = 400,
   METHOD_NOT_ALLOWED = 405,
 }
 
@@ -17,9 +17,17 @@ export default async function search(
     return;
   }
 
+  const { q } = req.query as { q: string };
+
+  if (!q) {
+    res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({ error: "parameter 'q' is required" });
+    return;
+  }
+
   const key = process.env.YOUTUBE_API_KEY;
   const type = "video";
-  const q = "hoge";
   const part = "snippet";
   const params = {
     key,

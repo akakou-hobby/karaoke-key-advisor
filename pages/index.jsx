@@ -11,6 +11,8 @@ const STATUS_STOPPED = 3
 
 const STATE_TABLE = ["Record", "Stop", "Stop", "Clear"]
 
+const KEY_ENTER = "Enter";
+
 const SEARCH_ENDPOINT = "https://www.googleapis.com/youtube/v3/search";
 
 function roundToTwo(num) {
@@ -253,6 +255,19 @@ const Home = ({ apiKey }) => {
     }));
   };
 
+  const handleSearchButton = async () => {
+    const resp = await callSearchApi(searchTitle, apiKey);
+
+    if (!resp?.data) {
+      return
+    }
+
+    const songs = searchResponseToSongs(resp.data);
+    setSearchedSongs(songs);
+    setPlayerSong(songUrl);
+    console.log({ songs });
+  }
+
   function ResultStack() {
     if (hasFinished)
       return (
@@ -380,23 +395,17 @@ const Home = ({ apiKey }) => {
             onInput={(e) => {
               setSearchTitle(e.target.value);
             }}
+            onKeyDown={(e) => {
+              if (e.key === KEY_ENTER) {
+                handleSearchButton()
+              }
+            }}
             placeholder="Lemon"
           />
           <br />
           <br />
           <Button
-            onClick={async () => {
-              const resp = await callSearchApi(searchTitle, apiKey);
-
-              if (!resp?.data) {
-                return
-              }
-
-              const songs = searchResponseToSongs(resp.data);
-              setSearchedSongs(songs);
-              setPlayerSong(songUrl);
-              console.log({ songs });
-            }}
+            onClick={() => handleSearchButton()}
           >
             Search
           </Button>

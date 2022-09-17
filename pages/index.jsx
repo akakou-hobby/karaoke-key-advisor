@@ -46,6 +46,8 @@ const RecordingIndicator = ({ isRecording, hasStarted }) => {
 };
 
 const SongSearchResult = ({ songs, onSelect }) => {
+  const [selectedSongId, setSelectedSongId] = useState("");
+
   if (songs === null) {
     return null;
   }
@@ -60,10 +62,10 @@ const SongSearchResult = ({ songs, onSelect }) => {
   if (songs.length < 1) {
     content = (
       <>
-        <Text color={"gray.600"} maxW={"4xl"}>
+        <Text color="gray.600" maxW={"4xl"}>
           検索結果が見つかりませんでした。
         </Text>
-        <Text color={"gray.600"} maxW={"4xl"}>
+        <Text color="gray.600" maxW={"4xl"}>
           再度検索するか、{" "}
           <a
             href="https://www.youtube.com/results"
@@ -78,41 +80,48 @@ const SongSearchResult = ({ songs, onSelect }) => {
       </>
     );
   } else {
-    content = songs.map(({ id, title, thumbnails }) => (
-      <Box
-        key={id}
-        bg="gray.50"
-        border="2px"
-        borderColor="gray.200"
-        p="1"
-        style={{ margin: "1em" }}
-        borderRadius="lg"
-      >
-        <Button
-          display="block"
-          is="FullWidth"
-          style={{ width: "100%" }}
-          onClick={() => onSelect(id)}
+    content = songs.map(({ id, title, thumbnails }) => {
+      const borderGray = selectedSongId === id ? "gray.400" : "gray.200";
+
+      return (
+        <Box
+          key={id}
+          bg="gray.50"
+          border="2px"
+          borderColor={borderGray}
           p="1"
+          style={{ margin: "1em" }}
+          borderRadius="lg"
         >
-          <Heading
-            as="h5"
-            size="sm"
-            margin="3"
-            justifySelf="left"
-            width="fit-content"
-          >
-            {title}
-          </Heading>
-          <Image
-            src={thumbnails.medium.url}
-            alt=""
-            margin="2"
+          <Button
             display="block"
-          />
-        </Button>
-      </Box>
-    ));
+            is="FullWidth"
+            style={{ width: "100%" }}
+            onClick={() => {
+              setSelectedSongId(id);
+              onSelect(id);
+            }}
+            p="1"
+          >
+            <Heading
+              as="h5"
+              size="sm"
+              margin="3"
+              justifySelf="left"
+              width="fit-content"
+            >
+              {title}
+            </Heading>
+            <Image
+              src={thumbnails.medium.url}
+              alt=""
+              margin="2"
+              display="block"
+            />
+          </Button>
+        </Box>
+      );
+    });
   }
 
   return (

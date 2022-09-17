@@ -7,17 +7,16 @@ class RecorderEvent {
 
 
 class Recorder {
-  constructor(event) {
+  constructor(events) {
     this.interval = 10
     this.timerId = 0
-    this.event = event
+    this.events = events
     this.audioContext = null
-    this.runnning = false
-    this.onPeriodHook = () => {}
+    this.running = false
   }
 
   async start() {
-    if (this.runnning) return
+    if (this.running) return
 
     const self = this
 
@@ -28,26 +27,32 @@ class Recorder {
     this.mic = new p5.AudioIn()
 
     this.mic.start(() => {
-      self.event.onStart(self)
+      for (const event of self.events) {
+        event.onStart(self)
+      }
     })
 
     this.timerId = setInterval(() => {
-      self.event.onPeriod(self)
-      self.onPeriodHook()
+      for (const event of self.events) {
+        event.onPeriod(self)
+      }
+
     }, this.interval)
 
 
-    this.runnning = true
+    this.running = true
   }
 
   stop() {
-    if (!this.runnning) return
+    if (!this.running) return
 
-    this.runnning = false
+    this.running = false
     this.mic.stop()
     this.audioContext.close()
 
-    this.event.onStop(this)
+    for (const event of this.events) {
+      event.onStop(this)
+    }
 
     clearInterval(this.timerId)
   }

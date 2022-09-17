@@ -9,8 +9,8 @@ const binder1 = new EventBinder(collector1)
 const binder2 = new EventBinder(collector2)
 
 
-const recorder1 = new Recorder(binder1)
-const recorder2 = new Recorder(binder2)
+const recorder1 = new Recorder([binder1])
+const recorder2 = new Recorder([binder2])
 
 const metronome = new Metronome()
 

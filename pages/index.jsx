@@ -1,72 +1,114 @@
 import Script from 'next/script'
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Link, Center } from '@chakra-ui/react'
+import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Link, Center, ColorModeProvider } from '@chakra-ui/react'
 
+
+const STATUS_READY = 0
+const STATUS_START = 1
+const STATUS_RECORDING = 2
+const STATUS_STOPPED = 3
+
+const STATE_TABLE = ["Record", "Stop", "Stop", "Clear"]
 
 function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
 }
 
-const RecordingIndicator = ({ isRecording, hasStarted }) => {
-    if (isRecording) {
-      return <Center h='3em' bg='green.500'>Recording</Center>
-    } else if (hasStarted) {
-      return <Center h='3em' bg='red.400'>歌い始めると録音を開始します……</Center>
-    } else {
-      return <Center h='3em' bg='red.400'>Not Recording</Center>
+const RecordingStack = ({ number, title }) => {
+  const candidates = [
+    () => <Text>録音されていません</Text>,
+    () => <Text>録音中です。歌い始めてください。</Text>,
+    () => <Text>録音中</Text>,
+    () => <Text>録音されました</Text>,
+  ]
+
+  let [recordState, setRecordState] = useState(0)
+  let [recorder, setRecorder] = useState({})
+  let [collector, setCollector] = useState({})
+
+  useEffect(() => {
+    if (number == 1) {
+      recorder = recorder1
+      collector = collector1
+    } else if (number == 2) {
+      recorder = recorder2
+      collector = collector2
     }
+
+    setRecorder(recorder)
+    setCollector(collector)
+
+    recorder.events.push({
+      onPeriod: () => {
+        if (collector.voice.length != 0 && recordState == STATUS_START) {
+          setRecordState(STATUS_RECORDING)
+        }
+      },
+      onStart: () => { },
+      onStop: () => { }
+    })
+  })
+
+  const Message = candidates[recordState]
+
+  return (
+    <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
+      <Heading as='h3' size='lg'>
+        {title}
+      </Heading>
+
+      <Text color={'gray.600'} maxW={'4xl'}>
+        ボタンを押した後、曲のサビをテンポに合わせて原曲キーで歌ってください。
+      </Text>
+
+      <Button onClick={() => {
+        if (recordState == STATUS_READY) {
+          metronome.start()
+          recorder.start()
+        }
+        else if (recordState === STATUS_START) {
+          recordState++
+        }
+        else if (recordState == STATUS_RECORDING) {
+          metronome.stop()
+          recorder.stop()
+        }
+        else if (recordState == STATUS_STOPPED) {
+          collector.clear()
+        }
+
+        setRecordState((recordState + 1) % 4)
+
+      }}>{STATE_TABLE[recordState]}</Button>
+
+      <Message> </Message>
+    </Stack>
+  )
 }
 
 const Home = () => {
   let [songUrl, setSongUrl] = useState("")
 
-  let [record1State, setRecord1State] = useState(0)
-  let [record2State, setRecord2State] = useState(0)
-
   let [avarageDiff, setAverageDiff] = useState(0)
-
-  const [voiceLength1, setVoiceLength1] = useState(0)
-  const [voiceLength2, setVoiceLength2] = useState(0)
-  const [isRecording1, setIsRecording1] = useState(false)
-  const [isRecording2, setIsRecording2] = useState(false)
-
-  const stateTable = ["Record", "Stop", "Clear"]
+  let [hasFinished, setHasFinished] = useState(false)
 
   useEffect(() => {
-    recorder1.onPeriodHook = () => {
-      const len = recorder1.event.pitchCollector.voice.length
-      const voiceAppended = voiceLength1 !== len
+    setInterval(function () {
+      const isRecorder1Finished = !recorder1.running && collector1.voice.length
+      const isRecorder2Finished = !recorder2.running && collector2.voice.length
 
-      if (voiceAppended) {
-        setVoiceLength1(len)
-        setIsRecording1(true)
+      if (isRecorder1Finished && isRecorder2Finished) {
+        setAverageDiff(calcAvarageDiff())
+        setHasFinished(isRecorder1Finished && isRecorder2Finished)
       }
-    }
 
-    setIsRecording1(isRecording1 && record1State === 1);
-  }, [voiceLength1, setVoiceLength1, record1State, isRecording1])
+    }, 500)
+  })
 
-  useEffect(() => {
-    recorder2.onPeriodHook = () => {
-      const len = recorder2.event.pitchCollector.voice.length
-      const voiceAppended = voiceLength2 !== len
-
-      if (voiceAppended) {
-        setVoiceLength2(len)
-        setIsRecording2(true)
-      }
-    }
-
-    setIsRecording2(isRecording2 && record2State === 1);
-  }, [voiceLength2, setVoiceLength2, record2State, isRecording2])
-
-  const hasRecordedDone = function () {
-    return record1State == 2 && record2State == 2
-  }
 
   function ResultStack() {
-    if (hasRecordedDone())
+    if (hasFinished)
       return (<Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
         <Heading as='h3' size='lg'>
           結果
@@ -171,80 +213,10 @@ const Home = () => {
         <div id="songle-sw"></div>
       </Stack>
 
-      <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
-        <Heading as='h3' size='lg'>
-          step3.原曲キーで歌う
-        </Heading>
+      <RecordingStack number="1" title="step3.原曲キーで歌う" />
+      <RecordingStack number="2" title="step4.好きなキーで歌う" />
 
-        <Text color={'gray.600'} maxW={'4xl'}>
-          ボタンを押した後、曲のサビをテンポに合わせて原曲キーで歌ってください。
-        </Text>
-
-        <Button onClick={() => {
-          if (record1State == 0) {
-            metronome.start()
-            recorder1.start()
-            setRecord1State(record1State + 1)
-          }
-          else if (record1State === 1) {
-            metronome.stop()
-            recorder1.stop()
-            setRecord1State(record1State + 1)
-          }
-          else if (record1State == 2) {
-            // recorder.stop()
-            collector1.clear()
-            setRecord1State(0)
-            setVoiceLength1(0)
-          }
-
-          console.log(record1State, record2State)
-
-          if (collector1.voice.length && collector2.voice.length)
-            setAverageDiff(calcAvarageDiff())
-        }}>{stateTable[record1State]}</Button>
-        {/* <p id='status'>ローディング中</p> */}
-        {/* <p id='result'>No pitch detected</p> */}
-        <RecordingIndicator isRecording={isRecording1} hasStarted={record1State === 1} />
-      </Stack>
-
-      <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
-        <Heading as='h3' size='lg'>
-          step4.好きなキーで歌う
-        </Heading>
-
-        <Text color={'gray.600'} maxW={'4xl'}>
-          ボタンを押した後、曲のサビをテンポに合わせて好きなキーで歌ってください。
-        </Text>
-
-        <Button onClick={() => {
-          if (record2State == 0) {
-            metronome.start()
-            recorder2.start()
-
-            setRecord2State(record2State + 1)
-          }
-          else if (record2State === 1) {
-            metronome.stop()
-            recorder2.stop()
-            setRecord2State(record2State + 1)
-          }
-          else if (record2State == 2) {
-            // recorder.stop()
-            collector2.clear()
-            setRecord2State(0)
-            setVoiceLength2(0)
-          }
-
-          console.log(record1State, record2State)
-
-          if (collector1.voice.length && collector2.voice.length)
-            setAverageDiff(calcAvarageDiff())
-        }}>{stateTable[record2State]}</Button>
-        <RecordingIndicator isRecording={isRecording2} hasStarted={record2State === 1} />
-      </Stack>
       <ResultStack />
-
       <a href="https://storyset.com/people">People illustrations by Storyset</a>
     </Container >
 

@@ -181,7 +181,7 @@ const SongSearchResult = ({ songs, onSelect }) => {
 };
 
 
-const Home = () => {
+const Home = ({ key }) => {
   const [searchTitle, setSearchTitle] = useState("");
   const [searchedSongs, setSearchedSongs] = useState(null);
 
@@ -431,5 +431,12 @@ const Home = () => {
     </Container>
   );
 };
+
+export async function getServerSideProps(context) {
+  const key = process.env.YOUTUBE_API_KEY;
+  return {
+    props: { key }, // will be passed to the page component as props
+  };
+}
 
 export default Home;

@@ -8,11 +8,15 @@ function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
 }
 
-const RecordingIndicator = ({ isRecording }) => (
-  isRecording
-    ? <Container bg='green.500'><Center h='3em'>Recording</Center></Container>
-    : <Container bg='red.400'><Center h='3em'>Not Recording</Center></Container>
-)
+const RecordingIndicator = ({ isRecording, hasStarted }) => {
+    if (isRecording) {
+      return <Container bg='green.500'><Center h='3em'>Recording</Center></Container>
+    } else if (hasStarted) {
+      return <Container bg='red.400'><Center h='3em'>歌い始めると録音を開始します……</Center></Container>
+    } else {
+      return <Container bg='red.400'><Center h='3em'>Not Recording</Center></Container>
+    }
+}
 
 const Home = () => {
   let [songUrl, setSongUrl] = useState("")
@@ -199,7 +203,7 @@ const Home = () => {
         }}>{stateTable[record1State]}</Button>
         {/* <p id='status'>ローディング中</p> */}
         {/* <p id='result'>No pitch detected</p> */}
-        <RecordingIndicator isRecording={isRecording1} />
+        <RecordingIndicator isRecording={isRecording1} hasStarted={record1State === 1} />
       </Stack>
 
       <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
@@ -235,7 +239,7 @@ const Home = () => {
           if (collector1.voice.length && collector2.voice.length)
             setAverageDiff(calcAvarageDiff())
         }}>{stateTable[record2State]}</Button>
-        <RecordingIndicator isRecording={isRecording2} />
+        <RecordingIndicator isRecording={isRecording2} hasStarted={record2State === 1} />
       </Stack>
       <ResultStack />
 

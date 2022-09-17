@@ -21,7 +21,32 @@ const calcAvarageDiff = () => {
   const sum2 = collector2.voice.reduce((a, x) => a + x)
   const avg2 = sum2 / collector2.voice.length
 
-  return avg2 - avg1
+  console.log("original: ", avg1)
+  console.log("real: ", avg2)
+
+  const diff = avg2 - avg1
+
+  console.log("diff: ", diff)
+
+  let sign = diff >= 0 ? 1 : -1
+  const mod = Math.abs(diff) % 14
+
+  console.log("sign: ", sign)
+  console.log("mod: ", mod)
+
+  let result
+
+  if (mod > 7) {
+    result = 14 - mod
+    sign *= -1
+  } else {
+    result = mod
+  }
+
+  result *= sign
+  console.log("result: ", result)
+
+  return result
 }
 
 document.addEventListener("visibilitychange", () => {

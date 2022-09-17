@@ -13,6 +13,7 @@ class Recorder {
     this.event = event
     this.audioContext = null
     this.runnning = false
+    this.onPeriodHook = () => {}
   }
 
   async start() {
@@ -32,6 +33,7 @@ class Recorder {
 
     this.timerId = setInterval(() => {
       self.event.onPeriod(self)
+      self.onPeriodHook()
     }, this.interval)
 
 

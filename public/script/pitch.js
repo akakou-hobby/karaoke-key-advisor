@@ -41,7 +41,6 @@ class PitchCollector {
   }
 
   modelLoaded() {
-    console.log("Loaded")
   }
 
   collectPitch() {
@@ -55,11 +54,9 @@ class PitchCollector {
 
       if (!frequency || midiNum == 69) return
 
-      console.log("pitch controller: ", self)
       self.voice.push(midiNum)
 
       const note = PitchNote.fromFrequency(frequency)
-      console.log("note: ", note)
     })
   }
 

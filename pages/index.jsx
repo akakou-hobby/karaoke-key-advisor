@@ -1,15 +1,26 @@
-import Script from 'next/script'
-import React, { useState, useEffect } from 'react'
-import Head from 'next/head'
-import { Heading, Container, Stack, Text, Button, Image, Input, FormControl, FormLabel, Box, } from '@chakra-ui/react'
+import Script from "next/script";
+import React, { useState, useEffect } from "react";
+import Head from "next/head";
+import {
+  Heading,
+  Container,
+  Stack,
+  Text,
+  Button,
+  Image,
+  Input,
+  FormControl,
+  FormLabel,
+  Box,
+} from "@chakra-ui/react";
 import axios from "axios";
 
-const STATUS_READY = 0
-const STATUS_START = 1
-const STATUS_RECORDING = 2
-const STATUS_STOPPED = 3
+const STATUS_READY = 0;
+const STATUS_START = 1;
+const STATUS_RECORDING = 2;
+const STATUS_STOPPED = 3;
 
-const STATE_TABLE = ["Record", "Stop", "Stop", "Clear"]
+const STATE_TABLE = ["Record", "Stop", "Stop", "Clear"];
 
 const KEY_ENTER = "Enter";
 
@@ -36,7 +47,6 @@ const callSearchApi = async (q, apiKey) => {
     videoCategoryId,
   };
 
-  console.log("calling youtube api...")
   let resp;
 
   try {
@@ -45,17 +55,15 @@ const callSearchApi = async (q, apiKey) => {
     });
   } catch (err) {
     if (err?.response?.status == 403) {
-      alert("YouTube の API 制限に到達しました。直接 URL を入力してください。")
+      alert("YouTube の API 制限に到達しました。直接 URL を入力してください。");
     } else {
-      throw err
+      throw err;
     }
-    return
+    return;
   }
-  console.log("called youtube api")
-  console.log({ resp })
 
   return resp;
-}
+};
 
 const RecordingStack = ({ number, title, text }) => {
   const candidates = [
@@ -63,71 +71,71 @@ const RecordingStack = ({ number, title, text }) => {
     () => <Text>録音中です。歌い始めてください。</Text>,
     () => <Text>録音中</Text>,
     () => <Text>録音されました</Text>,
-  ]
+  ];
 
-  let [recordState, setRecordState] = useState(0)
-  let [recorder, setRecorder] = useState({})
-  let [collector, setCollector] = useState({})
+  let [recordState, setRecordState] = useState(0);
+  let [recorder, setRecorder] = useState({});
+  let [collector, setCollector] = useState({});
 
   useEffect(() => {
     if (number == 1) {
-      recorder = recorder1
-      collector = collector1
+      recorder = recorder1;
+      collector = collector1;
     } else if (number == 2) {
-      recorder = recorder2
-      collector = collector2
+      recorder = recorder2;
+      collector = collector2;
     }
 
-    setRecorder(recorder)
-    setCollector(collector)
+    setRecorder(recorder);
+    setCollector(collector);
 
     recorder.events.push({
       onPeriod: () => {
         if (collector.voice.length != 0 && recordState == STATUS_START) {
-          setRecordState(STATUS_RECORDING)
+          setRecordState(STATUS_RECORDING);
         }
       },
-      onStart: () => { },
-      onStop: () => { }
-    })
-  })
+      onStart: () => {},
+      onStop: () => {},
+    });
+  });
 
-  const Message = candidates[recordState]
+  const Message = candidates[recordState];
 
   return (
     <Stack p="4" boxShadow="lg" m="4" borderRadius="sm">
-      <Heading as='h3' size='lg'>
+      <Heading as="h3" size="lg">
         {title}
       </Heading>
 
-      <Text color={'gray.600'} maxW={'4xl'}>
+      <Text color={"gray.600"} maxW={"4xl"}>
         {text}
       </Text>
 
-      <Button onClick={() => {
-        if (recordState == STATUS_READY) {
-          metronome.start()
-          recorder.start()
-        }
-        else if (recordState === STATUS_START) {
-          recordState++
-        }
-        else if (recordState == STATUS_RECORDING) {
-          metronome.stop()
-          recorder.stop()
-        }
-        else if (recordState == STATUS_STOPPED) {
-          collector.clear()
-        }
+      <Button
+        onClick={() => {
+          if (recordState == STATUS_READY) {
+            metronome.start();
+            recorder.start();
+          } else if (recordState === STATUS_START) {
+            recordState++;
+          } else if (recordState == STATUS_RECORDING) {
+            metronome.stop();
+            recorder.stop();
+          } else if (recordState == STATUS_STOPPED) {
+            collector.clear();
+          }
 
-        setRecordState((recordState + 1) % 4)
-
-      }}>{STATE_TABLE[recordState]}</Button>
+          setRecordState((recordState + 1) % 4);
+        }}
+      >
+        {STATE_TABLE[recordState]}
+      </Button>
 
       <Message> </Message>
     </Stack>
-  )
-}
+  );
+};
 
 const SongSearchResult = ({ songs, onSelect }) => {
   const [selectedSongId, setSelectedSongId] = useState("");
@@ -148,7 +156,7 @@ const SongSearchResult = ({ songs, onSelect }) => {
       <>
         <Text color="gray.600" maxW={"4xl"}>
           検索結果が見つかりませんでした。
-        </Text >
+        </Text>
         <Text color="gray.600" maxW={"4xl"}>
           再度検索するか、{" "}
           <a
@@ -220,14 +228,13 @@ const SongSearchResult = ({ songs, onSelect }) => {
   );
 };
 
-
 const Home = ({ apiKey }) => {
   const [searchTitle, setSearchTitle] = useState("");
   const [searchedSongs, setSearchedSongs] = useState(null);
 
-  let [avarageDiff, setAverageDiff] = useState(0)
-  let [hasFinished, setHasFinished] = useState(false)
-  let [songUrl, setSongUrl] = useState("")
+  let [avarageDiff, setAverageDiff] = useState(0);
+  let [hasFinished, setHasFinished] = useState(false);
+  let [songUrl, setSongUrl] = useState("");
 
   const setPlayerSong = (url) => {
     player.useMedia(url);
@@ -235,16 +242,15 @@ const Home = ({ apiKey }) => {
 
   useEffect(() => {
     setInterval(function () {
-      const isRecorder1Finished = !recorder1.running && collector1.voice.length
-      const isRecorder2Finished = !recorder2.running && collector2.voice.length
+      const isRecorder1Finished = !recorder1.running && collector1.voice.length;
+      const isRecorder2Finished = !recorder2.running && collector2.voice.length;
 
       if (isRecorder1Finished && isRecorder2Finished) {
-        setAverageDiff(calcAvarageDiff())
-        setHasFinished(isRecorder1Finished && isRecorder2Finished)
+        setAverageDiff(calcAvarageDiff());
+        setHasFinished(isRecorder1Finished && isRecorder2Finished);
       }
-
-    }, 500)
-  })
+    }, 500);
+  });
 
   const searchResponseToSongs = ({ items }) => {
     // see search.ts for response type definition
@@ -259,14 +265,13 @@ const Home = ({ apiKey }) => {
     const resp = await callSearchApi(searchTitle, apiKey);
 
     if (!resp?.data) {
-      return
+      return;
     }
 
     const songs = searchResponseToSongs(resp.data);
     setSearchedSongs(songs);
     setPlayerSong(songUrl);
-    console.log({ songs });
-  }
+  };
 
   function ResultStack() {
     if (hasFinished)
@@ -369,8 +374,7 @@ const Home = ({ apiKey }) => {
         </Heading>
 
         <Text color={"gray.600"} maxW={"4xl"} fontSize="xl">
-          歌いたいカラオケのキーがいくつかわからず困っていませんか。{" "}
-          <br />
+          歌いたいカラオケのキーがいくつかわからず困っていませんか。 <br />
           このサイトならたった4ステップで、歌いたいキーがいくつなのか見つけることができます。
         </Text>
 
@@ -388,7 +392,9 @@ const Home = ({ apiKey }) => {
         </Heading>
 
         <FormControl>
-          <FormLabel htmlFor="q">楽曲タイトルで YouTube の動画を検索し、動画を一つ選択してください。</FormLabel>
+          <FormLabel htmlFor="q">
+            楽曲タイトルで YouTube の動画を検索し、動画を一つ選択してください。
+          </FormLabel>
           <Input
             id="q"
             spacing={{ base: 8, md: 10 }}
@@ -397,18 +403,14 @@ const Home = ({ apiKey }) => {
             }}
             onKeyDown={(e) => {
               if (e.key === KEY_ENTER) {
-                handleSearchButton()
+                handleSearchButton();
               }
             }}
             placeholder="Lemon"
           />
           <br />
           <br />
-          <Button
-            onClick={() => handleSearchButton()}
-          >
-            Search
-          </Button>
+          <Button onClick={() => handleSearchButton()}>Search</Button>
           &nbsp;&nbsp;
         </FormControl>
 
@@ -420,7 +422,6 @@ const Home = ({ apiKey }) => {
             setPlayerSong(url);
           }}
         />
-
 
         <br />
         <Heading as="h4" size="g">
@@ -473,8 +474,16 @@ const Home = ({ apiKey }) => {
         <div id="songle-sw"></div>
       </Stack>
 
-      <RecordingStack number="1" title="step3.原曲キーで歌う" text="ボタンを押した後、曲のサビをテンポに合わせて原曲キーで歌ってください。" />
-      <RecordingStack number="2" title="step4.好きなキーで歌う" text="ボタンを押した後、曲のサビをテンポに合わせて好きなキーで歌ってください。" />
+      <RecordingStack
+        number="1"
+        title="step3.原曲キーで歌う"
+        text="ボタンを押した後、曲のサビをテンポに合わせて原曲キーで歌ってください。"
+      />
+      <RecordingStack
+        number="2"
+        title="step4.好きなキーで歌う"
+        text="ボタンを押した後、曲のサビをテンポに合わせて好きなキーで歌ってください。"
+      />
 
       <ResultStack />
       <a href="https://storyset.com/people">People illustrations by Storyset</a>

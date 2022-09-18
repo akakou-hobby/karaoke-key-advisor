@@ -16,7 +16,6 @@ window.onSongleAPIReady = (Songle) => {
 
     player.on("ready",
         function (ev) {
-            console.log(ev)
             player.pause()
             hasFirst = true
         });

@@ -12,7 +12,7 @@ const binder2 = new EventBinder(collector2)
 const recorder1 = new Recorder([binder1])
 const recorder2 = new Recorder([binder2])
 
-const metronome = new Metronome()
+const metronome = new Metronome(90)
 
 const calcAvarageDiff = () => {
   const sum1 = collector1.voice.reduce((a, x) => a + x)
@@ -21,18 +21,10 @@ const calcAvarageDiff = () => {
   const sum2 = collector2.voice.reduce((a, x) => a + x)
   const avg2 = sum2 / collector2.voice.length
 
-  console.log("original: ", avg1)
-  console.log("real: ", avg2)
-
   const diff = avg2 - avg1
-
-  console.log("diff: ", diff)
 
   let sign = diff >= 0 ? 1 : -1
   const mod = Math.abs(diff) % 14
-
-  console.log("sign: ", sign)
-  console.log("mod: ", mod)
 
   let result
 
@@ -44,7 +36,6 @@ const calcAvarageDiff = () => {
   }
 
   result *= sign
-  console.log("result: ", result)
 
   return result
 }

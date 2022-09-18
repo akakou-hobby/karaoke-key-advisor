@@ -3,6 +3,7 @@ let bpm = 100;
 let hasFirst = true
 
 window.onSongleAPIReady = (Songle) => {
+  try {
     player =
         new Songle.Player({
             mediaElement: "#songle-yt"
@@ -41,4 +42,7 @@ window.onSongleAPIReady = (Songle) => {
     )
 
     player.useMedia("https://www.youtube.com/watch?v=6j7VwJ7sM_k")
+  } catch (e) {
+    /* FIXME */
+  }
 }

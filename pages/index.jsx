@@ -52,12 +52,12 @@ const callSearchApi = async (q, apiKey) => {
     return
   }
   console.log("called youtube api")
-  console.log({resp})
+  console.log({ resp })
 
   return resp;
 }
 
-const RecordingStack = ({ number, title }) => {
+const RecordingStack = ({ number, title, text }) => {
   const candidates = [
     () => <Text>録音されていません</Text>,
     () => <Text>録音中です。歌い始めてください。</Text>,
@@ -101,7 +101,7 @@ const RecordingStack = ({ number, title }) => {
       </Heading>
 
       <Text color={'gray.600'} maxW={'4xl'}>
-        ボタンを押した後、曲のサビをテンポに合わせて原曲キーで歌ってください。
+        {text}
       </Text>
 
       <Button onClick={() => {
@@ -369,9 +369,9 @@ const Home = ({ apiKey }) => {
         </Heading>
 
         <Text color={"gray.600"} maxW={"4xl"} fontSize="xl">
-          気持ちよく歌えるカラオケのキーが見つからなくて困っていませんか。{" "}
+          歌いたいカラオケのキーがいくつかわからず困っていませんか。{" "}
           <br />
-          このサイトなら、たった4ステップで気持ちのよいキーをみつけることができます。
+          このサイトならたった4ステップで、歌いたいキーがいくつなのか見つけることができます。
         </Text>
 
         <Image src="/Karaoke-bro.png"></Image>
@@ -473,8 +473,8 @@ const Home = ({ apiKey }) => {
         <div id="songle-sw"></div>
       </Stack>
 
-      <RecordingStack number="1" title="step3.原曲キーで歌う" />
-      <RecordingStack number="2" title="step4.好きなキーで歌う" />
+      <RecordingStack number="1" title="step3.原曲キーで歌う" text="ボタンを押した後、曲のサビをテンポに合わせて原曲キーで歌ってください。" />
+      <RecordingStack number="2" title="step4.好きなキーで歌う" text="ボタンを押した後、曲のサビをテンポに合わせて好きなキーで歌ってください。" />
 
       <ResultStack />
       <a href="https://storyset.com/people">People illustrations by Storyset</a>
